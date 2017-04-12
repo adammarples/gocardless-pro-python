@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_subscriptions_create():
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.currency, body.get('currency'))
@@ -52,6 +53,7 @@ def test_subscriptions_list():
 
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal([r.amount for r in response.records],
                  [b.get('amount') for b in body])
     assert_equal([r.created_at for r in response.records],
@@ -111,6 +113,7 @@ def test_subscriptions_get():
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.currency, body.get('currency'))
@@ -137,6 +140,7 @@ def test_subscriptions_update():
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.currency, body.get('currency'))
@@ -163,6 +167,7 @@ def test_subscriptions_cancel():
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.currency, body.get('currency'))

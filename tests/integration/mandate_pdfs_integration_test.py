@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,5 +22,6 @@ def test_mandate_pdfs_create():
     body = fixture['body']['mandate_pdfs']
 
     assert_is_instance(response, resources.MandatePdf)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.expires_at, body.get('expires_at'))
     assert_equal(response.url, body.get('url'))

@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -26,6 +26,7 @@ def test_payouts_list():
 
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal([r.amount for r in response.records],
                  [b.get('amount') for b in body])
     assert_equal([r.arrival_date for r in response.records],
@@ -73,6 +74,7 @@ def test_payouts_get():
     body = fixture['body']['payouts']
 
     assert_is_instance(response, resources.Payout)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.arrival_date, body.get('arrival_date'))
     assert_equal(response.created_at, body.get('created_at'))

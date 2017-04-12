@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_mandates_create():
     body = fixture['body']['mandates']
 
     assert_is_instance(response, resources.Mandate)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.id, body.get('id'))
     assert_equal(response.metadata, body.get('metadata'))
@@ -51,6 +52,7 @@ def test_mandates_list():
 
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal([r.created_at for r in response.records],
                  [b.get('created_at') for b in body])
     assert_equal([r.id for r in response.records],
@@ -96,6 +98,7 @@ def test_mandates_get():
     body = fixture['body']['mandates']
 
     assert_is_instance(response, resources.Mandate)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.id, body.get('id'))
     assert_equal(response.metadata, body.get('metadata'))
@@ -121,6 +124,7 @@ def test_mandates_update():
     body = fixture['body']['mandates']
 
     assert_is_instance(response, resources.Mandate)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.id, body.get('id'))
     assert_equal(response.metadata, body.get('metadata'))
@@ -146,6 +150,7 @@ def test_mandates_cancel():
     body = fixture['body']['mandates']
 
     assert_is_instance(response, resources.Mandate)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.id, body.get('id'))
     assert_equal(response.metadata, body.get('metadata'))
@@ -171,6 +176,7 @@ def test_mandates_reinstate():
     body = fixture['body']['mandates']
 
     assert_is_instance(response, resources.Mandate)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.id, body.get('id'))
     assert_equal(response.metadata, body.get('metadata'))

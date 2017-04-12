@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_customers_create():
     body = fixture['body']['customers']
 
     assert_is_instance(response, resources.Customer)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.address_line1, body.get('address_line1'))
     assert_equal(response.address_line2, body.get('address_line2'))
     assert_equal(response.address_line3, body.get('address_line3'))
@@ -51,6 +52,7 @@ def test_customers_list():
 
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal([r.address_line1 for r in response.records],
                  [b.get('address_line1') for b in body])
     assert_equal([r.address_line2 for r in response.records],
@@ -112,6 +114,7 @@ def test_customers_get():
     body = fixture['body']['customers']
 
     assert_is_instance(response, resources.Customer)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.address_line1, body.get('address_line1'))
     assert_equal(response.address_line2, body.get('address_line2'))
     assert_equal(response.address_line3, body.get('address_line3'))
@@ -137,6 +140,7 @@ def test_customers_update():
     body = fixture['body']['customers']
 
     assert_is_instance(response, resources.Customer)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.address_line1, body.get('address_line1'))
     assert_equal(response.address_line2, body.get('address_line2'))
     assert_equal(response.address_line3, body.get('address_line3'))

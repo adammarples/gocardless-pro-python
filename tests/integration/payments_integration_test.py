@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_payments_create():
     body = fixture['body']['payments']
 
     assert_is_instance(response, resources.Payment)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.amount_refunded, body.get('amount_refunded'))
     assert_equal(response.charge_date, body.get('charge_date'))
@@ -53,6 +54,7 @@ def test_payments_list():
 
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal([r.amount for r in response.records],
                  [b.get('amount') for b in body])
     assert_equal([r.amount_refunded for r in response.records],
@@ -102,6 +104,7 @@ def test_payments_get():
     body = fixture['body']['payments']
 
     assert_is_instance(response, resources.Payment)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.amount_refunded, body.get('amount_refunded'))
     assert_equal(response.charge_date, body.get('charge_date'))
@@ -129,6 +132,7 @@ def test_payments_update():
     body = fixture['body']['payments']
 
     assert_is_instance(response, resources.Payment)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.amount_refunded, body.get('amount_refunded'))
     assert_equal(response.charge_date, body.get('charge_date'))
@@ -156,6 +160,7 @@ def test_payments_cancel():
     body = fixture['body']['payments']
 
     assert_is_instance(response, resources.Payment)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.amount_refunded, body.get('amount_refunded'))
     assert_equal(response.charge_date, body.get('charge_date'))
@@ -183,6 +188,7 @@ def test_payments_retry():
     body = fixture['body']['payments']
 
     assert_is_instance(response, resources.Payment)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.amount, body.get('amount'))
     assert_equal(response.amount_refunded, body.get('amount_refunded'))
     assert_equal(response.charge_date, body.get('charge_date'))

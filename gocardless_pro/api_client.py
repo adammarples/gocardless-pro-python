@@ -12,6 +12,7 @@ except ImportError:
 import json
 
 import requests
+from uuid import uuid4
 
 from . import errors
 
@@ -61,6 +62,13 @@ class ApiClient(object):
         Returns:
           A requests ``Response`` object.
         """
+        idempotency_headers = {
+          'Idempotency-Key': str(uuid4())
+        }
+        if headers:
+          idempotency_headers.update(headers)
+        headers = idempotency_headers
+
         response = requests.post(
             self._url_for(path),
             data=json.dumps(body),

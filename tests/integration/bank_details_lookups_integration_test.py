@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_bank_details_lookups_create():
     body = fixture['body']['bank_details_lookups']
 
     assert_is_instance(response, resources.BankDetailsLookup)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.available_debit_schemes, body.get('available_debit_schemes'))
     assert_equal(response.bank_name, body.get('bank_name'))
     assert_equal(response.bic, body.get('bic'))

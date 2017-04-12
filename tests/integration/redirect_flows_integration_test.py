@@ -7,7 +7,7 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance
+from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -22,6 +22,7 @@ def test_redirect_flows_create():
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.description, body.get('description'))
     assert_equal(response.id, body.get('id'))
@@ -46,6 +47,7 @@ def test_redirect_flows_get():
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
+    assert_is_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.description, body.get('description'))
     assert_equal(response.id, body.get('id'))
@@ -70,6 +72,7 @@ def test_redirect_flows_complete():
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
+    assert_is_not_none(responses.calls[-1].request.headers.get('Idempotency-Key'))
     assert_equal(response.created_at, body.get('created_at'))
     assert_equal(response.description, body.get('description'))
     assert_equal(response.id, body.get('id'))
