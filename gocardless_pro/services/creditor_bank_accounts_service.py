@@ -14,7 +14,6 @@ class CreditorBankAccountsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.CreditorBankAccount
     RESOURCE_NAME = 'creditor_bank_accounts'
-
     def create(self, params=None, headers=None):
         """Create a creditor bank account.
 
@@ -34,7 +33,6 @@ class CreditorBankAccountsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List creditor bank accounts.
 
@@ -64,8 +62,8 @@ class CreditorBankAccountsService(base_service.BaseService):
 
         Retrieves the details of an existing creditor bank account.
 
-        Args:
-          identity (string): Unique identifier, beginning with "BA".
+        Args:identity
+           (string): Unique identifier, beginning with "BA".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -80,7 +78,6 @@ class CreditorBankAccountsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def disable(self, identity, params=None, headers=None):
         """Disable a creditor bank account.
 
@@ -94,8 +91,8 @@ class CreditorBankAccountsService(base_service.BaseService):
         disabled bank account can be re-enabled by creating a new bank account
         resource with the same details.
 
-        Args:
-          identity (string): Unique identifier, beginning with "BA".
+        Args:identity
+           (string): Unique identifier, beginning with "BA".
           params (dict, optional): Request body.
 
         Returns:
@@ -110,4 +107,3 @@ class CreditorBankAccountsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-

@@ -14,7 +14,6 @@ class MandatesService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Mandate
     RESOURCE_NAME = 'mandates'
-
     def create(self, params=None, headers=None):
         """Create a mandate.
 
@@ -34,7 +33,6 @@ class MandatesService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List mandates.
 
@@ -64,8 +62,8 @@ class MandatesService(base_service.BaseService):
 
         Retrieves the details of an existing mandate.
 
-        Args:
-          identity (string): Unique identifier, beginning with "MD".
+        Args:identity
+           (string): Unique identifier, beginning with "MD".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -80,14 +78,13 @@ class MandatesService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a mandate.
 
         Updates a mandate object. This accepts only the metadata parameter.
 
-        Args:
-          identity (string): Unique identifier, beginning with "MD".
+        Args:identity
+           (string): Unique identifier, beginning with "MD".
           params (dict, optional): Request body.
 
         Returns:
@@ -104,7 +101,6 @@ class MandatesService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def cancel(self, identity, params=None, headers=None):
         """Cancel a mandate.
 
@@ -115,8 +111,8 @@ class MandatesService(base_service.BaseService):
         This will fail with a
         `cancellation_failed` error if the mandate is already cancelled.
 
-        Args:
-          identity (string): Unique identifier, beginning with "MD".
+        Args:identity
+           (string): Unique identifier, beginning with "MD".
           params (dict, optional): Request body.
 
         Returns:
@@ -131,7 +127,6 @@ class MandatesService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-
     def reinstate(self, identity, params=None, headers=None):
         """Reinstate a mandate.
 
@@ -150,8 +145,8 @@ class MandatesService(base_service.BaseService):
         Mandates can be
         resubmitted up to 3 times.
 
-        Args:
-          identity (string): Unique identifier, beginning with "MD".
+        Args:identity
+           (string): Unique identifier, beginning with "MD".
           params (dict, optional): Request body.
 
         Returns:
@@ -166,4 +161,3 @@ class MandatesService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-

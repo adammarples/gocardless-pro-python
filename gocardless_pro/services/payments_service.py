@@ -14,7 +14,6 @@ class PaymentsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Payment
     RESOURCE_NAME = 'payments'
-
     def create(self, params=None, headers=None):
         """Create a payment.
 
@@ -41,7 +40,6 @@ class PaymentsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List payments.
 
@@ -71,8 +69,8 @@ class PaymentsService(base_service.BaseService):
 
         Retrieves the details of a single existing payment.
 
-        Args:
-          identity (string): Unique identifier, beginning with "PM".
+        Args:identity
+           (string): Unique identifier, beginning with "PM".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -87,14 +85,13 @@ class PaymentsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a payment.
 
         Updates a payment object. This accepts only the metadata parameter.
 
-        Args:
-          identity (string): Unique identifier, beginning with "PM".
+        Args:identity
+           (string): Unique identifier, beginning with "PM".
           params (dict, optional): Request body.
 
         Returns:
@@ -111,7 +108,6 @@ class PaymentsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def cancel(self, identity, params=None, headers=None):
         """Cancel a payment.
 
@@ -123,8 +119,8 @@ class PaymentsService(base_service.BaseService):
         `cancellation_failed` error unless the payment's status is
         `pending_submission`.
 
-        Args:
-          identity (string): Unique identifier, beginning with "PM".
+        Args:identity
+           (string): Unique identifier, beginning with "PM".
           params (dict, optional): Request body.
 
         Returns:
@@ -139,7 +135,6 @@ class PaymentsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-
     def retry(self, identity, params=None, headers=None):
         """Retry a payment.
 
@@ -157,8 +152,8 @@ class PaymentsService(base_service.BaseService):
         Payments can be retried up to
         3 times.
 
-        Args:
-          identity (string): Unique identifier, beginning with "PM".
+        Args:identity
+           (string): Unique identifier, beginning with "PM".
           params (dict, optional): Request body.
 
         Returns:
@@ -173,4 +168,3 @@ class PaymentsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-

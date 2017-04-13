@@ -14,7 +14,6 @@ class CustomersService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Customer
     RESOURCE_NAME = 'customers'
-
     def create(self, params=None, headers=None):
         """Create a customer.
 
@@ -34,7 +33,6 @@ class CustomersService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List customers.
 
@@ -64,8 +62,8 @@ class CustomersService(base_service.BaseService):
 
         Retrieves the details of an existing customer.
 
-        Args:
-          identity (string): Unique identifier, beginning with "CU".
+        Args:identity
+           (string): Unique identifier, beginning with "CU".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -80,15 +78,14 @@ class CustomersService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a customer.
 
         Updates a customer object. Supports all of the fields supported when
         creating a customer.
 
-        Args:
-          identity (string): Unique identifier, beginning with "CU".
+        Args:identity
+           (string): Unique identifier, beginning with "CU".
           params (dict, optional): Request body.
 
         Returns:
@@ -105,4 +102,3 @@ class CustomersService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-

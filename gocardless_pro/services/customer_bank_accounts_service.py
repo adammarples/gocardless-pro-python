@@ -14,7 +14,6 @@ class CustomerBankAccountsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.CustomerBankAccount
     RESOURCE_NAME = 'customer_bank_accounts'
-
     def create(self, params=None, headers=None):
         """Create a customer bank account.
 
@@ -50,7 +49,6 @@ class CustomerBankAccountsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List customer bank accounts.
 
@@ -80,8 +78,8 @@ class CustomerBankAccountsService(base_service.BaseService):
 
         Retrieves the details of an existing bank account.
 
-        Args:
-          identity (string): Unique identifier, beginning with "BA".
+        Args:identity
+           (string): Unique identifier, beginning with "BA".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -96,15 +94,14 @@ class CustomerBankAccountsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a customer bank account.
 
         Updates a customer bank account object. Only the metadata parameter is
         allowed.
 
-        Args:
-          identity (string): Unique identifier, beginning with "BA".
+        Args:identity
+           (string): Unique identifier, beginning with "BA".
           params (dict, optional): Request body.
 
         Returns:
@@ -121,7 +118,6 @@ class CustomerBankAccountsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def disable(self, identity, params=None, headers=None):
         """Disable a customer bank account.
 
@@ -135,8 +131,8 @@ class CustomerBankAccountsService(base_service.BaseService):
         account can be re-enabled by creating a new bank account resource with
         the same details.
 
-        Args:
-          identity (string): Unique identifier, beginning with "BA".
+        Args:identity
+           (string): Unique identifier, beginning with "BA".
           params (dict, optional): Request body.
 
         Returns:
@@ -151,4 +147,3 @@ class CustomerBankAccountsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-

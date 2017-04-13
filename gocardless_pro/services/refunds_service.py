@@ -14,7 +14,6 @@ class RefundsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Refund
     RESOURCE_NAME = 'refunds'
-
     def create(self, params=None, headers=None):
         """Create a refund.
 
@@ -54,7 +53,6 @@ class RefundsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List refunds.
 
@@ -84,8 +82,8 @@ class RefundsService(base_service.BaseService):
 
         Retrieves all details for a single refund
 
-        Args:
-          identity (string): Unique identifier, beginning with "RF".
+        Args:identity
+           (string): Unique identifier, beginning with "RF".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -100,14 +98,13 @@ class RefundsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a refund.
 
         Updates a refund object.
 
-        Args:
-          identity (string): Unique identifier, beginning with "RF".
+        Args:identity
+           (string): Unique identifier, beginning with "RF".
           params (dict, optional): Request body.
 
         Returns:
@@ -124,4 +121,3 @@ class RefundsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-

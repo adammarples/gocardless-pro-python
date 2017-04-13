@@ -14,7 +14,6 @@ class MandatePdfsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.MandatePdf
     RESOURCE_NAME = 'mandate_pdfs'
-
     def create(self, params=None, headers=None):
         """Create a mandate PDF.
 
@@ -46,4 +45,3 @@ class MandatePdfsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-

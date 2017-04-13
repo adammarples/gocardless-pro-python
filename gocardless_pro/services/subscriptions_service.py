@@ -14,7 +14,6 @@ class SubscriptionsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Subscription
     RESOURCE_NAME = 'subscriptions'
-
     def create(self, params=None, headers=None):
         """Create a subscription.
 
@@ -34,7 +33,6 @@ class SubscriptionsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List subscriptions.
 
@@ -64,8 +62,8 @@ class SubscriptionsService(base_service.BaseService):
 
         Retrieves the details of a single subscription.
 
-        Args:
-          identity (string): Unique identifier, beginning with "SB".
+        Args:identity
+           (string): Unique identifier, beginning with "SB".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -80,14 +78,13 @@ class SubscriptionsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a subscription.
 
         Updates a subscription object.
 
-        Args:
-          identity (string): Unique identifier, beginning with "SB".
+        Args:identity
+           (string): Unique identifier, beginning with "SB".
           params (dict, optional): Request body.
 
         Returns:
@@ -104,7 +101,6 @@ class SubscriptionsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def cancel(self, identity, params=None, headers=None):
         """Cancel a subscription.
 
@@ -116,8 +112,8 @@ class SubscriptionsService(base_service.BaseService):
         with a cancellation_failed error if the subscription is already
         cancelled or finished.
 
-        Args:
-          identity (string): Unique identifier, beginning with "SB".
+        Args:identity
+           (string): Unique identifier, beginning with "SB".
           params (dict, optional): Request body.
 
         Returns:
@@ -132,4 +128,3 @@ class SubscriptionsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
-

@@ -14,7 +14,6 @@ class PayoutsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Payout
     RESOURCE_NAME = 'payouts'
-
     def list(self, params=None, headers=None):
         """List payouts.
 
@@ -46,8 +45,8 @@ class PayoutsService(base_service.BaseService):
         reconcile the transactions in a payout, see [this
         guide](#events-reconciling-payouts-with-events).
 
-        Args:
-          identity (string): Unique identifier, beginning with "PO".
+        Args:identity
+           (string): Unique identifier, beginning with "PO".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -62,4 +61,3 @@ class PayoutsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-

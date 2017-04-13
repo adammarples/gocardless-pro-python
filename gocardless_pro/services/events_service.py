@@ -14,7 +14,6 @@ class EventsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Event
     RESOURCE_NAME = 'events'
-
     def list(self, params=None, headers=None):
         """List events.
 
@@ -44,8 +43,8 @@ class EventsService(base_service.BaseService):
 
         Retrieves the details of a single event.
 
-        Args:
-          identity (string): Unique identifier, beginning with "EV".
+        Args:identity
+           (string): Unique identifier, beginning with "EV".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -60,4 +59,3 @@ class EventsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-

@@ -14,7 +14,6 @@ class CreditorsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Creditor
     RESOURCE_NAME = 'creditors'
-
     def create(self, params=None, headers=None):
         """Create a creditor.
 
@@ -34,7 +33,6 @@ class CreditorsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def list(self, params=None, headers=None):
         """List creditors.
 
@@ -64,8 +62,8 @@ class CreditorsService(base_service.BaseService):
 
         Retrieves the details of an existing creditor.
 
-        Args:
-          identity (string): Unique identifier, beginning with "CR".
+        Args:identity
+           (string): Unique identifier, beginning with "CR".
           params (dict, optional): Query string parameters.
 
         Returns:
@@ -80,15 +78,14 @@ class CreditorsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
     def update(self, identity, params=None, headers=None):
         """Update a creditor.
 
         Updates a creditor object. Supports all of the fields supported when
         creating a creditor.
 
-        Args:
-          identity (string): Unique identifier, beginning with "CR".
+        Args:identity
+           (string): Unique identifier, beginning with "CR".
           params (dict, optional): Request body.
 
         Returns:
@@ -105,4 +102,3 @@ class CreditorsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-
