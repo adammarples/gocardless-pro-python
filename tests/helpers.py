@@ -9,6 +9,8 @@ import json
 
 import responses
 
+from contextlib import contextmanager
+
 import gocardless_pro
 
 def load_fixture(resource):
@@ -23,5 +25,40 @@ def stub_response(resource_fixture):
     json_body = json.dumps(resource_fixture['body'])
     responses.add(resource_fixture['method'], url_pattern, body=json_body)
 
-client = gocardless_pro.Client(access_token='secret', base_url='http://example.com')
+@contextmanager
+def stub_timeout_then_response(resource_fixture):
+    path = re.sub(r':(\w+)', r'\w+', resource_fixture['path_template'])
+    url_pattern = re.compile('http://example.com' + path)
+    json_body = json.dumps(resource_fixture['body'])
+    try:
+      with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
+        rsps.add(resource_fixture['method'], url_pattern, status=408)
+        rsps.add(resource_fixture['method'], url_pattern, body=json_body)
+        yield rsps
+    except AssertionError as e:
+      message = e.args[0]
+      if 'Not all requests have been executed' == message[:35]:
+        raise AssertionError("Expected {} to have been tried more than once".format(message[35:]))
+      else:
+        raise e
 
+@contextmanager
+def stub_502_then_response(resource_fixture):
+    path = re.sub(r':(\w+)', r'\w+', resource_fixture['path_template'])
+    url_pattern = re.compile('http://example.com' + path)
+    json_body = json.dumps(resource_fixture['body'])
+    try:
+      with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
+        rsps.add(resource_fixture['method'], url_pattern, status=502,
+                 content_type='text/html',
+                 body='<html><body>Response from Cloudflare</body></html>')
+        rsps.add(resource_fixture['method'], url_pattern, body=json_body)
+        yield rsps
+    except AssertionError as e:
+      message = e.args[0]
+      if 'Not all requests have been executed' == message[:35]:
+        raise AssertionError("Expected {} to have been tried more than once".format(message[35:]))
+      else:
+        raise e
+
+client = gocardless_pro.Client(access_token='secret', base_url='http://example.com')

@@ -7,7 +7,13 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
+from nose.tools import (
+  assert_equal,
+  assert_is_instance,
+  assert_is_none,
+  assert_is_not_none,
+  assert_raises
+)
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -39,6 +45,30 @@ def test_customers_create():
     assert_equal(response.postal_code, body.get('postal_code'))
     assert_equal(response.region, body.get('region'))
     assert_equal(response.swedish_identity_number, body.get('swedish_identity_number'))
+
+@responses.activate
+def test_timeout_customers_all():
+    fixture = helpers.load_fixture('customers')['create']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.customers.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)
+
+@responses.activate
+def test_502_customers_all():
+    fixture = helpers.load_fixture('customers')['create']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.customers.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)
 
 @responses.activate
 def test_customers_list():
@@ -87,6 +117,38 @@ def test_customers_list():
                  [b.get('swedish_identity_number') for b in body])
 
 @responses.activate
+def test_timeout_customers_all():
+    fixture = helpers.load_fixture('customers')['list']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.customers.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Customer)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
+def test_502_customers_all():
+    fixture = helpers.load_fixture('customers')['list']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.customers.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Customer)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
 def test_customers_all():
     fixture = helpers.load_fixture('customers')['list']
 
@@ -104,7 +166,6 @@ def test_customers_all():
     assert_equal(len(all_records), len(fixture['body']['customers']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.Customer)
-
 
 @responses.activate
 def test_customers_get():
@@ -133,6 +194,30 @@ def test_customers_get():
     assert_equal(response.swedish_identity_number, body.get('swedish_identity_number'))
 
 @responses.activate
+def test_timeout_customers_all():
+    fixture = helpers.load_fixture('customers')['get']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.customers.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)
+
+@responses.activate
+def test_502_customers_all():
+    fixture = helpers.load_fixture('customers')['get']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.customers.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)
+
+@responses.activate
 def test_customers_update():
     fixture = helpers.load_fixture('customers')['update']
     helpers.stub_response(fixture)
@@ -157,3 +242,27 @@ def test_customers_update():
     assert_equal(response.postal_code, body.get('postal_code'))
     assert_equal(response.region, body.get('region'))
     assert_equal(response.swedish_identity_number, body.get('swedish_identity_number'))
+
+@responses.activate
+def test_timeout_customers_all():
+    fixture = helpers.load_fixture('customers')['update']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.customers.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)
+
+@responses.activate
+def test_502_customers_all():
+    fixture = helpers.load_fixture('customers')['update']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.customers.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['customers']
+
+    assert_is_instance(response, resources.Customer)

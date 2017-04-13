@@ -7,7 +7,13 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
+from nose.tools import (
+  assert_equal,
+  assert_is_instance,
+  assert_is_none,
+  assert_is_not_none,
+  assert_raises
+)
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -47,6 +53,38 @@ def test_payouts_list():
                  [b.get('status') for b in body])
 
 @responses.activate
+def test_timeout_payouts_all():
+    fixture = helpers.load_fixture('payouts')['list']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.payouts.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['payouts']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Payout)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
+def test_502_payouts_all():
+    fixture = helpers.load_fixture('payouts')['list']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.payouts.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['payouts']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Payout)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
 def test_payouts_all():
     fixture = helpers.load_fixture('payouts')['list']
 
@@ -64,7 +102,6 @@ def test_payouts_all():
     assert_equal(len(all_records), len(fixture['body']['payouts']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.Payout)
-
 
 @responses.activate
 def test_payouts_get():
@@ -88,3 +125,27 @@ def test_payouts_get():
                  body.get('links')['creditor'])
     assert_equal(response.links.creditor_bank_account,
                  body.get('links')['creditor_bank_account'])
+
+@responses.activate
+def test_timeout_payouts_all():
+    fixture = helpers.load_fixture('payouts')['get']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.payouts.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['payouts']
+
+    assert_is_instance(response, resources.Payout)
+
+@responses.activate
+def test_502_payouts_all():
+    fixture = helpers.load_fixture('payouts')['get']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.payouts.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['payouts']
+
+    assert_is_instance(response, resources.Payout)

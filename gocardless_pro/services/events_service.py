@@ -28,7 +28,10 @@ class EventsService(base_service.BaseService):
           ListResponse of Event instances
         """
         path = '/events'
-        response = self._perform_request('GET', path, params, headers)
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -49,8 +52,12 @@ class EventsService(base_service.BaseService):
           Event
         """
         path = self._sub_url_params('/events/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 

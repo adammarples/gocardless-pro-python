@@ -7,7 +7,13 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
+from nose.tools import (
+  assert_equal,
+  assert_is_instance,
+  assert_is_none,
+  assert_is_not_none,
+  assert_raises
+)
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -31,6 +37,30 @@ def test_refunds_create():
     assert_equal(response.reference, body.get('reference'))
     assert_equal(response.links.payment,
                  body.get('links')['payment'])
+
+@responses.activate
+def test_timeout_refunds_all():
+    fixture = helpers.load_fixture('refunds')['create']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.refunds.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)
+
+@responses.activate
+def test_502_refunds_all():
+    fixture = helpers.load_fixture('refunds')['create']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.refunds.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)
 
 @responses.activate
 def test_refunds_list():
@@ -59,6 +89,38 @@ def test_refunds_list():
                  [b.get('reference') for b in body])
 
 @responses.activate
+def test_timeout_refunds_all():
+    fixture = helpers.load_fixture('refunds')['list']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.refunds.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Refund)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
+def test_502_refunds_all():
+    fixture = helpers.load_fixture('refunds')['list']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.refunds.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Refund)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
 def test_refunds_all():
     fixture = helpers.load_fixture('refunds')['list']
 
@@ -76,7 +138,6 @@ def test_refunds_all():
     assert_equal(len(all_records), len(fixture['body']['refunds']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.Refund)
-
 
 @responses.activate
 def test_refunds_get():
@@ -97,6 +158,30 @@ def test_refunds_get():
                  body.get('links')['payment'])
 
 @responses.activate
+def test_timeout_refunds_all():
+    fixture = helpers.load_fixture('refunds')['get']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.refunds.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)
+
+@responses.activate
+def test_502_refunds_all():
+    fixture = helpers.load_fixture('refunds')['get']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.refunds.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)
+
+@responses.activate
 def test_refunds_update():
     fixture = helpers.load_fixture('refunds')['update']
     helpers.stub_response(fixture)
@@ -113,3 +198,27 @@ def test_refunds_update():
     assert_equal(response.reference, body.get('reference'))
     assert_equal(response.links.payment,
                  body.get('links')['payment'])
+
+@responses.activate
+def test_timeout_refunds_all():
+    fixture = helpers.load_fixture('refunds')['update']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.refunds.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)
+
+@responses.activate
+def test_502_refunds_all():
+    fixture = helpers.load_fixture('refunds')['update']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.refunds.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['refunds']
+
+    assert_is_instance(response, resources.Refund)

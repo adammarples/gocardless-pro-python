@@ -39,8 +39,11 @@ class MandatePdfsService(base_service.BaseService):
           MandatePdf
         """
         path = '/mandate_pdfs'
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 

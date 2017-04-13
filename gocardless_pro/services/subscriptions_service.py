@@ -27,9 +27,12 @@ class SubscriptionsService(base_service.BaseService):
           Subscription
         """
         path = '/subscriptions'
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def list(self, params=None, headers=None):
@@ -45,7 +48,10 @@ class SubscriptionsService(base_service.BaseService):
           ListResponse of Subscription instances
         """
         path = '/subscriptions'
-        response = self._perform_request('GET', path, params, headers)
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -66,9 +72,13 @@ class SubscriptionsService(base_service.BaseService):
           Subscription
         """
         path = self._sub_url_params('/subscriptions/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def update(self, identity, params=None, headers=None):
@@ -84,11 +94,15 @@ class SubscriptionsService(base_service.BaseService):
           Subscription
         """
         path = self._sub_url_params('/subscriptions/:identity', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('PUT', path, params, headers)
+        response = self._perform_request('PUT', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def cancel(self, identity, params=None, headers=None):
@@ -110,8 +124,10 @@ class SubscriptionsService(base_service.BaseService):
           Subscription
         """
         path = self._sub_url_params('/subscriptions/:identity/actions/cancel', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)

@@ -4,17 +4,17 @@
 #
 
 import re
+import time
 
 from .. import list_response
 from ..api_response import ApiResponse
 
 class BaseService(object):
     """Base class for API service classes."""
-
     def __init__(self, api_client):
         self._api_client = api_client
 
-    def _perform_request(self, method, path, params, headers):
+    def _attempt_request(self, method, path, params, headers):
         if method == 'GET':
             return self._api_client.get(path, params=params, headers=headers)
 
@@ -25,6 +25,18 @@ class BaseService(object):
             return self._api_client.put(path, body=params, headers=headers)
 
         raise ValueError('Invalid method "{}"'.format(method))
+
+    def _perform_request(self, *args, **kwargs):
+        max_attempts = kwargs.pop('retries', 1)
+        retry_delay_seconds = kwargs.pop('retry_delay_seconds', 0.5)
+        network_execption = None
+        for _ in range(max_attempts):
+            try:
+                return self._attempt_request(*args, **kwargs)
+            except Exception as e:
+               network_exception = e
+               time.sleep(retry_delay_seconds)
+        raise network_exception
 
     def _envelope_key(self):
         return type(self).RESOURCE_NAME

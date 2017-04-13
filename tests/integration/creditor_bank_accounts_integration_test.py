@@ -7,7 +7,13 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
+from nose.tools import (
+  assert_equal,
+  assert_is_instance,
+  assert_is_none,
+  assert_is_not_none,
+  assert_raises
+)
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -34,6 +40,30 @@ def test_creditor_bank_accounts_create():
     assert_equal(response.metadata, body.get('metadata'))
     assert_equal(response.links.creditor,
                  body.get('links')['creditor'])
+
+@responses.activate
+def test_timeout_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['create']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, resources.CreditorBankAccount)
+
+@responses.activate
+def test_502_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['create']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, resources.CreditorBankAccount)
 
 @responses.activate
 def test_creditor_bank_accounts_list():
@@ -68,6 +98,38 @@ def test_creditor_bank_accounts_list():
                  [b.get('metadata') for b in body])
 
 @responses.activate
+def test_timeout_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['list']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.CreditorBankAccount)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
+def test_502_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['list']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.CreditorBankAccount)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
 def test_creditor_bank_accounts_all():
     fixture = helpers.load_fixture('creditor_bank_accounts')['list']
 
@@ -85,7 +147,6 @@ def test_creditor_bank_accounts_all():
     assert_equal(len(all_records), len(fixture['body']['creditor_bank_accounts']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.CreditorBankAccount)
-
 
 @responses.activate
 def test_creditor_bank_accounts_get():
@@ -109,6 +170,30 @@ def test_creditor_bank_accounts_get():
                  body.get('links')['creditor'])
 
 @responses.activate
+def test_timeout_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['get']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, resources.CreditorBankAccount)
+
+@responses.activate
+def test_502_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['get']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.creditor_bank_accounts.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['creditor_bank_accounts']
+
+    assert_is_instance(response, resources.CreditorBankAccount)
+
+@responses.activate
 def test_creditor_bank_accounts_disable():
     fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
     helpers.stub_response(fixture)
@@ -128,3 +213,25 @@ def test_creditor_bank_accounts_disable():
     assert_equal(response.metadata, body.get('metadata'))
     assert_equal(response.links.creditor,
                  body.get('links')['creditor'])
+
+@responses.activate
+def test_timeout_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
+    with assert_raises(AssertionError):
+      with helpers.stub_timeout_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))
+
+@responses.activate
+def test_502_creditor_bank_accounts_all():
+    fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
+    with assert_raises(AssertionError):
+      with helpers.stub_502_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))

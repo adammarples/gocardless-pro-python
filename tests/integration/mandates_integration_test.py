@@ -7,7 +7,13 @@ import json
 
 import requests
 import responses
-from nose.tools import assert_equal, assert_is_instance, assert_is_none, assert_is_not_none
+from nose.tools import (
+  assert_equal,
+  assert_is_instance,
+  assert_is_none,
+  assert_is_not_none,
+  assert_raises
+)
 
 from gocardless_pro import resources
 from gocardless_pro import list_response
@@ -41,6 +47,30 @@ def test_mandates_create():
                  body.get('links')['new_mandate'])
 
 @responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['create']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.mandates.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['create']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.mandates.create(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
+
+@responses.activate
 def test_mandates_list():
     fixture = helpers.load_fixture('mandates')['list']
     helpers.stub_response(fixture)
@@ -71,6 +101,38 @@ def test_mandates_list():
                  [b.get('status') for b in body])
 
 @responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['list']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.mandates.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Mandate)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['list']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.mandates.list(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, list_response.ListResponse)
+    assert_is_instance(response.records[0], resources.Mandate)
+
+    assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
+    assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
+
+@responses.activate
 def test_mandates_all():
     fixture = helpers.load_fixture('mandates')['list']
 
@@ -88,7 +150,6 @@ def test_mandates_all():
     assert_equal(len(all_records), len(fixture['body']['mandates']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.Mandate)
-
 
 @responses.activate
 def test_mandates_get():
@@ -117,6 +178,30 @@ def test_mandates_get():
                  body.get('links')['new_mandate'])
 
 @responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['get']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.mandates.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['get']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.mandates.get(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
+
+@responses.activate
 def test_mandates_update():
     fixture = helpers.load_fixture('mandates')['update']
     helpers.stub_response(fixture)
@@ -141,6 +226,30 @@ def test_mandates_update():
                  body.get('links')['customer_bank_account'])
     assert_equal(response.links.new_mandate,
                  body.get('links')['new_mandate'])
+
+@responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['update']
+    with helpers.stub_timeout_then_response(fixture) as rsps:
+      response = helpers.client.mandates.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['update']
+    with helpers.stub_502_then_response(fixture) as rsps:
+      response = helpers.client.mandates.update(*fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+
+      good_response = rsps.calls[1].response
+    body = fixture['body']['mandates']
+
+    assert_is_instance(response, resources.Mandate)
 
 @responses.activate
 def test_mandates_cancel():
@@ -169,6 +278,28 @@ def test_mandates_cancel():
                  body.get('links')['new_mandate'])
 
 @responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['cancel']
+    with assert_raises(AssertionError):
+      with helpers.stub_timeout_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.mandates.cancel(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['cancel']
+    with assert_raises(AssertionError):
+      with helpers.stub_502_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.mandates.cancel(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))
+
+@responses.activate
 def test_mandates_reinstate():
     fixture = helpers.load_fixture('mandates')['reinstate']
     helpers.stub_response(fixture)
@@ -193,3 +324,25 @@ def test_mandates_reinstate():
                  body.get('links')['customer_bank_account'])
     assert_equal(response.links.new_mandate,
                  body.get('links')['new_mandate'])
+
+@responses.activate
+def test_timeout_mandates_all():
+    fixture = helpers.load_fixture('mandates')['reinstate']
+    with assert_raises(AssertionError):
+      with helpers.stub_timeout_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.mandates.reinstate(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))
+
+@responses.activate
+def test_502_mandates_all():
+    fixture = helpers.load_fixture('mandates')['reinstate']
+    with assert_raises(AssertionError):
+      with helpers.stub_502_then_response(fixture) as rsps:
+        try:
+          response = helpers.client.mandates.reinstate(*fixture['url_params'])
+        except Exception:
+          pass
+        assert_equal(1, len(rsps.calls))

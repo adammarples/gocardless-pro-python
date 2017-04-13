@@ -28,7 +28,10 @@ class PayoutsService(base_service.BaseService):
           ListResponse of Payout instances
         """
         path = '/payouts'
-        response = self._perform_request('GET', path, params, headers)
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -51,8 +54,12 @@ class PayoutsService(base_service.BaseService):
           Payout
         """
         path = self._sub_url_params('/payouts/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 

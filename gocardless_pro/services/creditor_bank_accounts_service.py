@@ -27,9 +27,12 @@ class CreditorBankAccountsService(base_service.BaseService):
           CreditorBankAccount
         """
         path = '/creditor_bank_accounts'
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def list(self, params=None, headers=None):
@@ -45,7 +48,10 @@ class CreditorBankAccountsService(base_service.BaseService):
           ListResponse of CreditorBankAccount instances
         """
         path = '/creditor_bank_accounts'
-        response = self._perform_request('GET', path, params, headers)
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -66,9 +72,13 @@ class CreditorBankAccountsService(base_service.BaseService):
           CreditorBankAccount
         """
         path = self._sub_url_params('/creditor_bank_accounts/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def disable(self, identity, params=None, headers=None):
@@ -92,8 +102,10 @@ class CreditorBankAccountsService(base_service.BaseService):
           CreditorBankAccount
         """
         path = self._sub_url_params('/creditor_bank_accounts/:identity/actions/disable', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)

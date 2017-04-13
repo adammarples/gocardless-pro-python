@@ -27,9 +27,12 @@ class MandatesService(base_service.BaseService):
           Mandate
         """
         path = '/mandates'
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def list(self, params=None, headers=None):
@@ -45,7 +48,10 @@ class MandatesService(base_service.BaseService):
           ListResponse of Mandate instances
         """
         path = '/mandates'
-        response = self._perform_request('GET', path, params, headers)
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -66,9 +72,13 @@ class MandatesService(base_service.BaseService):
           Mandate
         """
         path = self._sub_url_params('/mandates/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def update(self, identity, params=None, headers=None):
@@ -84,11 +94,15 @@ class MandatesService(base_service.BaseService):
           Mandate
         """
         path = self._sub_url_params('/mandates/:identity', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('PUT', path, params, headers)
+        response = self._perform_request('PUT', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def cancel(self, identity, params=None, headers=None):
@@ -109,8 +123,10 @@ class MandatesService(base_service.BaseService):
           Mandate
         """
         path = self._sub_url_params('/mandates/:identity/actions/cancel', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
@@ -142,8 +158,10 @@ class MandatesService(base_service.BaseService):
           Mandate
         """
         path = self._sub_url_params('/mandates/:identity/actions/reinstate', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)

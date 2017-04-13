@@ -28,9 +28,12 @@ class RedirectFlowsService(base_service.BaseService):
           RedirectFlow
         """
         path = '/redirect_flows'
+        
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def get(self, identity, params=None, headers=None):
@@ -46,9 +49,13 @@ class RedirectFlowsService(base_service.BaseService):
           RedirectFlow
         """
         path = self._sub_url_params('/redirect_flows/:identity', {
+          
             'identity': identity,
-        })
-        response = self._perform_request('GET', path, params, headers)
+          })
+        
+        response = self._perform_request('GET', path, params, headers,
+                                         retries=3,
+                                         retry_delay_seconds=0.5)
         return self._resource_for(response)
 
     def complete(self, identity, params=None, headers=None):
@@ -75,8 +82,10 @@ class RedirectFlowsService(base_service.BaseService):
           RedirectFlow
         """
         path = self._sub_url_params('/redirect_flows/:identity/actions/complete', {
+          
             'identity': identity,
-        })
+          })
+        
         if params is not None:
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
