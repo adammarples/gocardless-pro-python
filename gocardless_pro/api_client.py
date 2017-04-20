@@ -62,12 +62,9 @@ class ApiClient(object):
         Returns:
           A requests ``Response`` object.
         """
-        idempotency_headers = {
-          'Idempotency-Key': str(uuid4())
-        }
-        if headers:
-          idempotency_headers.update(headers)
-        headers = idempotency_headers
+        headers = headers or {}
+        if 'Idempotency-Key' not in headers:
+          headers['Idempotency-Key'] = str(uuid4())
 
         response = requests.post(
             self._url_for(path),

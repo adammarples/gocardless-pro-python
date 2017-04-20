@@ -78,8 +78,11 @@ class IdempotentCreationConflictError(ApiError):
 
     @property
     def conflicting_resource_id(self):
-        return self.error['errors'][0]['links']['conflicting_resource_id']
-    pass
+        for error in self.error['errors']:
+            if 'conflicting_resource_id' in error.get('links', []):
+                return error['links']['conflicting_resource_id']
+        else:
+            raise ApiError("Idempotent Creation Conflict Error missing conflicting_resource_id")
 
 
 class InvalidApiUsageError(ApiError):
