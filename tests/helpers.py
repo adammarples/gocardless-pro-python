@@ -54,8 +54,8 @@ def stub_502_then_response(resource_fixture):
     # Will raise 'AssertionError: Not all requests have been executed'
     # if not all of the responses are hit.
 
-def idempotency_conflict_body(resource_fixture):
 
+def idempotency_conflict_body(resource_fixture):
     return {
       'error': {
         'type': 'invalid_state',
