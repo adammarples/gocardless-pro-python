@@ -6,6 +6,7 @@
 from . import base_service
 from .. import resources
 from ..paginator import Paginator
+from .. import errors
 
 class RefundsService(base_service.BaseService):
     """Service class that provides access to the refunds
@@ -14,7 +15,9 @@ class RefundsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Refund
     RESOURCE_NAME = 'refunds'
-    def create(self, params=None, headers=None):
+
+
+    def create(self,params=None, headers=None):
         """Create a refund.
 
         Creates a new refund object.
@@ -40,30 +43,37 @@ class RefundsService(base_service.BaseService):
         
 
         Args:
-          params (dict, optional): Request body.
+              params (dict, optional): Request body.
 
         Returns:
-          Refund
+              ListResponse of Refund instances
         """
         path = '/refunds'
         
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+        try:
+          response = self._perform_request('POST', path, params, headers,
+                                           retries=3,
+                                           retry_delay_seconds=0.5)
+        except errors.IdempotentCreationConflictError as err:
+          return self.get(identity = err.conflicting_resource_id,
+                                params = params,
+                                headers = headers)
         return self._resource_for(response)
-    def list(self, params=None, headers=None):
+  
+
+    def list(self,params=None, headers=None):
         """List refunds.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
         refunds.
 
         Args:
-          params (dict, optional): Query string parameters.
+              params (dict, optional): Query string parameters.
 
         Returns:
-          ListResponse of Refund instances
+              Refund
         """
         path = '/refunds'
         
@@ -76,18 +86,20 @@ class RefundsService(base_service.BaseService):
         if params is None:
             params = {}
         return Paginator(self, params)
+    
+  
 
-    def get(self, identity, params=None, headers=None):
+    def get(self,identity,params=None, headers=None):
         """Get a single refund.
 
         Retrieves all details for a single refund
 
-        Args:identity
-           (string): Unique identifier, beginning with "RF".
-          params (dict, optional): Query string parameters.
+        Args:
+              identity (string): Unique identifier, beginning with "RF".
+              params (dict, optional): Query string parameters.
 
         Returns:
-          Refund
+              ListResponse of Refund instances
         """
         path = self._sub_url_params('/refunds/:identity', {
           
@@ -98,17 +110,19 @@ class RefundsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-    def update(self, identity, params=None, headers=None):
+  
+
+    def update(self,identity,params=None, headers=None):
         """Update a refund.
 
         Updates a refund object.
 
-        Args:identity
-           (string): Unique identifier, beginning with "RF".
-          params (dict, optional): Request body.
+        Args:
+              identity (string): Unique identifier, beginning with "RF".
+              params (dict, optional): Request body.
 
         Returns:
-          Refund
+              ListResponse of Refund instances
         """
         path = self._sub_url_params('/refunds/:identity', {
           
@@ -121,3 +135,4 @@ class RefundsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
+  

@@ -19,6 +19,7 @@ from gocardless_pro import resources
 from gocardless_pro import list_response
 
 from .. import helpers
+  
 
 @responses.activate
 def test_subscriptions_create():
@@ -47,29 +48,34 @@ def test_subscriptions_create():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_subscriptions_all():
+def test_timeout_subscriptions_idempotency_conflict():
+    create_fixture = helpers.load_fixture('subscriptions')['create']
+    get_fixture = helpers.load_fixture('subscriptions')['get']
+    with helpers.stub_timeout_then_idempotecy_conflict(create_fixture, get_fixture) as rsps:
+      response = helpers.client.subscriptions.create(*create_fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+      good_response = rsps.calls[1].response
+
+    assert_is_instance(response, resources.Subscription)
+
+def test_timeout_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['create']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
 
-@responses.activate
-def test_502_subscriptions_all():
+def test_502_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['create']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+  
 
 @responses.activate
 def test_subscriptions_list():
@@ -115,14 +121,11 @@ def test_subscriptions_list():
     assert_equal([r.upcoming_payments for r in response.records],
                  [b.get('upcoming_payments') for b in body])
 
-@responses.activate
-def test_timeout_subscriptions_all():
+def test_timeout_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['list']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.list(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, list_response.ListResponse)
@@ -131,14 +134,11 @@ def test_timeout_subscriptions_all():
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
 
-@responses.activate
-def test_502_subscriptions_all():
+def test_502_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['list']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.list(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, list_response.ListResponse)
@@ -165,6 +165,8 @@ def test_subscriptions_all():
     assert_equal(len(all_records), len(fixture['body']['subscriptions']) * 2)
     for record in all_records:
       assert_is_instance(record, resources.Subscription)
+    
+  
 
 @responses.activate
 def test_subscriptions_get():
@@ -193,29 +195,24 @@ def test_subscriptions_get():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_subscriptions_all():
+def test_timeout_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['get']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
 
-@responses.activate
-def test_502_subscriptions_all():
+def test_502_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['get']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+  
 
 @responses.activate
 def test_subscriptions_update():
@@ -244,29 +241,24 @@ def test_subscriptions_update():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_subscriptions_all():
+def test_timeout_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['update']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.update(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
 
-@responses.activate
-def test_502_subscriptions_all():
+def test_502_subscriptions_retries():
     fixture = helpers.load_fixture('subscriptions')['update']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.subscriptions.update(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['subscriptions']
 
     assert_is_instance(response, resources.Subscription)
+  
 
 @responses.activate
 def test_subscriptions_cancel():
@@ -295,8 +287,7 @@ def test_subscriptions_cancel():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_subscriptions_all():
+def test_timeout_subscriptions_doesnt_retry():
     fixture = helpers.load_fixture('subscriptions')['cancel']
     with assert_raises(AssertionError):
       with helpers.stub_timeout_then_response(fixture) as rsps:
@@ -306,8 +297,7 @@ def test_timeout_subscriptions_all():
           pass
         assert_equal(1, len(rsps.calls))
 
-@responses.activate
-def test_502_subscriptions_all():
+def test_502_subscriptions_doesnt_retry():
     fixture = helpers.load_fixture('subscriptions')['cancel']
     with assert_raises(AssertionError):
       with helpers.stub_502_then_response(fixture) as rsps:
@@ -316,3 +306,4 @@ def test_502_subscriptions_all():
         except Exception:
           pass
         assert_equal(1, len(rsps.calls))
+  

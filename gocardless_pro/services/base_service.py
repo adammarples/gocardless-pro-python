@@ -6,8 +6,10 @@
 import re
 import time
 
+from requests import RequestException
 from .. import list_response
 from ..api_response import ApiResponse
+from ..errors import MalformedResponseError
 
 class BaseService(object):
     """Base class for API service classes."""
@@ -30,12 +32,12 @@ class BaseService(object):
         max_attempts = kwargs.pop('retries', 1)
         retry_delay_seconds = kwargs.pop('retry_delay_seconds', 0.5)
         network_execption = None
-        for _ in range(max_attempts):
+        for attempt in range(max_attempts):
             try:
                 return self._attempt_request(*args, **kwargs)
-            except Exception as e:
-               network_exception = e
-               time.sleep(retry_delay_seconds)
+            except (RequestException, MalformedResponseError) as e:
+                network_exception = e
+                time.sleep(retry_delay_seconds)
         raise network_exception
 
     def _envelope_key(self):

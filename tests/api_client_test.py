@@ -91,6 +91,18 @@ def test_handles_invalid_state_error():
     assert_equals(assertion.exception.errors, fixture['error']['errors'])
 
 @responses.activate
+def test_handles_idempotent_creation_conflict_error():
+    fixture = helpers.load_fixture('idempotent_creation_conflict_error')
+    responses.add(responses.POST, 'http://example.com/test',
+                  body=json.dumps(fixture), status=fixture['error']['code'])
+
+    with assert_raises(errors.IdempotentCreationConflictError) as assertion:
+        client.post('/test', body={'name': 'Billy Jean'})
+
+    assert_equals(assertion.exception.message, fixture['error']['message'])
+    assert_equals(assertion.exception.errors, fixture['error']['errors'])
+
+@responses.activate
 def test_handles_gocardless_error():
     fixture = helpers.load_fixture('gocardless_error')
     responses.add(responses.POST, 'http://example.com/test',

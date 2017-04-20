@@ -6,6 +6,7 @@
 from . import base_service
 from .. import resources
 from ..paginator import Paginator
+from .. import errors
 
 class CustomersService(base_service.BaseService):
     """Service class that provides access to the customers
@@ -14,36 +15,45 @@ class CustomersService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.Customer
     RESOURCE_NAME = 'customers'
-    def create(self, params=None, headers=None):
+
+
+    def create(self,params=None, headers=None):
         """Create a customer.
 
         Creates a new customer object.
 
         Args:
-          params (dict, optional): Request body.
+              params (dict, optional): Request body.
 
         Returns:
-          Customer
+              ListResponse of Customer instances
         """
         path = '/customers'
         
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+        try:
+          response = self._perform_request('POST', path, params, headers,
+                                           retries=3,
+                                           retry_delay_seconds=0.5)
+        except errors.IdempotentCreationConflictError as err:
+          return self.get(identity = err.conflicting_resource_id,
+                                params = params,
+                                headers = headers)
         return self._resource_for(response)
-    def list(self, params=None, headers=None):
+  
+
+    def list(self,params=None, headers=None):
         """List customers.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
         customers.
 
         Args:
-          params (dict, optional): Query string parameters.
+              params (dict, optional): Query string parameters.
 
         Returns:
-          ListResponse of Customer instances
+              Customer
         """
         path = '/customers'
         
@@ -56,18 +66,20 @@ class CustomersService(base_service.BaseService):
         if params is None:
             params = {}
         return Paginator(self, params)
+    
+  
 
-    def get(self, identity, params=None, headers=None):
+    def get(self,identity,params=None, headers=None):
         """Get a single customer.
 
         Retrieves the details of an existing customer.
 
-        Args:identity
-           (string): Unique identifier, beginning with "CU".
-          params (dict, optional): Query string parameters.
+        Args:
+              identity (string): Unique identifier, beginning with "CU".
+              params (dict, optional): Query string parameters.
 
         Returns:
-          Customer
+              ListResponse of Customer instances
         """
         path = self._sub_url_params('/customers/:identity', {
           
@@ -78,18 +90,20 @@ class CustomersService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-    def update(self, identity, params=None, headers=None):
+  
+
+    def update(self,identity,params=None, headers=None):
         """Update a customer.
 
         Updates a customer object. Supports all of the fields supported when
         creating a customer.
 
-        Args:identity
-           (string): Unique identifier, beginning with "CU".
-          params (dict, optional): Request body.
+        Args:
+              identity (string): Unique identifier, beginning with "CU".
+              params (dict, optional): Request body.
 
         Returns:
-          Customer
+              ListResponse of Customer instances
         """
         path = self._sub_url_params('/customers/:identity', {
           
@@ -102,3 +116,4 @@ class CustomersService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
+  

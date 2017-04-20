@@ -19,6 +19,7 @@ from gocardless_pro import resources
 from gocardless_pro import list_response
 
 from .. import helpers
+  
 
 @responses.activate
 def test_redirect_flows_create():
@@ -45,29 +46,34 @@ def test_redirect_flows_create():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_redirect_flows_all():
+def test_timeout_redirect_flows_idempotency_conflict():
+    create_fixture = helpers.load_fixture('redirect_flows')['create']
+    get_fixture = helpers.load_fixture('redirect_flows')['get']
+    with helpers.stub_timeout_then_idempotecy_conflict(create_fixture, get_fixture) as rsps:
+      response = helpers.client.redirect_flows.create(*create_fixture['url_params'])
+      assert_equal(2, len(rsps.calls))
+      good_response = rsps.calls[1].response
+
+    assert_is_instance(response, resources.RedirectFlow)
+
+def test_timeout_redirect_flows_retries():
     fixture = helpers.load_fixture('redirect_flows')['create']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.redirect_flows.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
 
-@responses.activate
-def test_502_redirect_flows_all():
+def test_502_redirect_flows_retries():
     fixture = helpers.load_fixture('redirect_flows')['create']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.redirect_flows.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
+  
 
 @responses.activate
 def test_redirect_flows_get():
@@ -94,29 +100,24 @@ def test_redirect_flows_get():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_redirect_flows_all():
+def test_timeout_redirect_flows_retries():
     fixture = helpers.load_fixture('redirect_flows')['get']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.redirect_flows.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
 
-@responses.activate
-def test_502_redirect_flows_all():
+def test_502_redirect_flows_retries():
     fixture = helpers.load_fixture('redirect_flows')['get']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.redirect_flows.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-
-      good_response = rsps.calls[1].response
     body = fixture['body']['redirect_flows']
 
     assert_is_instance(response, resources.RedirectFlow)
+  
 
 @responses.activate
 def test_redirect_flows_complete():
@@ -143,8 +144,7 @@ def test_redirect_flows_complete():
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
 
-@responses.activate
-def test_timeout_redirect_flows_all():
+def test_timeout_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
     with assert_raises(AssertionError):
       with helpers.stub_timeout_then_response(fixture) as rsps:
@@ -154,8 +154,7 @@ def test_timeout_redirect_flows_all():
           pass
         assert_equal(1, len(rsps.calls))
 
-@responses.activate
-def test_502_redirect_flows_all():
+def test_502_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
     with assert_raises(AssertionError):
       with helpers.stub_502_then_response(fixture) as rsps:
@@ -164,3 +163,4 @@ def test_502_redirect_flows_all():
         except Exception:
           pass
         assert_equal(1, len(rsps.calls))
+  

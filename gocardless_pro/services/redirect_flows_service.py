@@ -6,6 +6,7 @@
 from . import base_service
 from .. import resources
 from ..paginator import Paginator
+from .. import errors
 
 class RedirectFlowsService(base_service.BaseService):
     """Service class that provides access to the redirect_flows
@@ -14,37 +15,46 @@ class RedirectFlowsService(base_service.BaseService):
 
     RESOURCE_CLASS = resources.RedirectFlow
     RESOURCE_NAME = 'redirect_flows'
-    def create(self, params=None, headers=None):
+
+
+    def create(self,params=None, headers=None):
         """Create a redirect flow.
 
         Creates a redirect flow object which can then be used to redirect your
         customer to the GoCardless hosted payment pages.
 
         Args:
-          params (dict, optional): Request body.
+              params (dict, optional): Request body.
 
         Returns:
-          RedirectFlow
+              ListResponse of RedirectFlow instances
         """
         path = '/redirect_flows'
         
         if params is not None:
             params = {self._envelope_key(): params}
-        response = self._perform_request('POST', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+        try:
+          response = self._perform_request('POST', path, params, headers,
+                                           retries=3,
+                                           retry_delay_seconds=0.5)
+        except errors.IdempotentCreationConflictError as err:
+          return self.get(identity = err.conflicting_resource_id,
+                                params = params,
+                                headers = headers)
         return self._resource_for(response)
-    def get(self, identity, params=None, headers=None):
+  
+
+    def get(self,identity,params=None, headers=None):
         """Get a single redirect flow.
 
         Returns all details about a single redirect flow
 
-        Args:identity
-           (string): Unique identifier, beginning with "RE".
-          params (dict, optional): Query string parameters.
+        Args:
+              identity (string): Unique identifier, beginning with "RE".
+              params (dict, optional): Query string parameters.
 
         Returns:
-          RedirectFlow
+              ListResponse of RedirectFlow instances
         """
         path = self._sub_url_params('/redirect_flows/:identity', {
           
@@ -55,7 +65,9 @@ class RedirectFlowsService(base_service.BaseService):
                                          retries=3,
                                          retry_delay_seconds=0.5)
         return self._resource_for(response)
-    def complete(self, identity, params=None, headers=None):
+  
+
+    def complete(self,identity,params=None, headers=None):
         """Complete a redirect flow.
 
         This creates a [customer](#core-endpoints-customers), [customer bank
@@ -71,12 +83,12 @@ class RedirectFlowsService(base_service.BaseService):
         `session_token` differs to the one supplied when the redirect flow was
         created.
 
-        Args:identity
-           (string): Unique identifier, beginning with "RE".
-          params (dict, optional): Request body.
+        Args:
+              identity (string): Unique identifier, beginning with "RE".
+              params (dict, optional): Request body.
 
         Returns:
-          RedirectFlow
+              ListResponse of RedirectFlow instances
         """
         path = self._sub_url_params('/redirect_flows/:identity/actions/complete', {
           
@@ -87,3 +99,4 @@ class RedirectFlowsService(base_service.BaseService):
             params = {'data': params}
         response = self._perform_request('POST', path, params, headers)
         return self._resource_for(response)
+  

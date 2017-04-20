@@ -109,7 +109,7 @@ class ApiClient(object):
             return
 
         error = response.json()['error']
-        exception_class = errors.ApiError.exception_for(error['type'])
+        exception_class = errors.ApiError.exception_for(error['type'], error.get('errors'))
         raise exception_class(error)
 
     def _url_for(self, path):

@@ -50,13 +50,16 @@ class ApiError(GoCardlessProError):
         return self.error.get('request_id')
 
     @classmethod
-    def exception_for(cls, error_type):
+    def exception_for(cls, error_type, errors=[]):
         if error_type == 'validation_failed':
             return ValidationFailedError
         if error_type == 'invalid_api_usage':
             return InvalidApiUsageError
         if error_type == 'invalid_state':
-            return InvalidStateError
+            if errors[0]['reason'] == 'idempotent_creation_conflict':
+                return IdempotentCreationConflictError
+            else:
+                return InvalidStateError
         if error_type == 'gocardless':
             return GoCardlessInternalError
         raise GoCardlessProError('Invalid error type "{}"'.format(error_type))
@@ -69,6 +72,14 @@ class ValidationFailedError(ApiError):
             errors = ['{field} {message}'.format(**error) for error in self.errors]
             return '{} ({})'.format(self.message, ', '.join(errors))
         return super(ValidationFailedError, self).__str__()
+
+
+class IdempotentCreationConflictError(ApiError):
+
+    @property
+    def conflicting_resource_id(self):
+        return self.error['errors'][0]['links']['conflicting_resource_id']
+    pass
 
 
 class InvalidApiUsageError(ApiError):
