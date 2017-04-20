@@ -72,7 +72,7 @@ def idempotency_conflict_body(resource_fixture):
 
 
 @contextmanager
-def stub_timeout_then_idempotecy_conflict(create_fixture, get_fixture):
+def stub_timeout_then_idempotency_conflict(create_fixture, get_fixture):
     create_url_pattern = url_pattern_for(create_fixture)
     get_url_pattern = url_pattern_for(create_fixture)
     error_body = json.dumps(idempotency_conflict_body(create_fixture))

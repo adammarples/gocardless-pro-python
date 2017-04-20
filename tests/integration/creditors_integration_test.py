@@ -52,7 +52,7 @@ def test_creditors_create():
 def test_timeout_creditors_idempotency_conflict():
     create_fixture = helpers.load_fixture('creditors')['create']
     get_fixture = helpers.load_fixture('creditors')['get']
-    with helpers.stub_timeout_then_idempotecy_conflict(create_fixture, get_fixture) as rsps:
+    with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
       response = helpers.client.creditors.create(*create_fixture['url_params'])
       assert_equal(2, len(rsps.calls))
       good_response = rsps.calls[1].response
