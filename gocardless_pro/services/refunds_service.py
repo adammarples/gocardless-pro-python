@@ -54,8 +54,8 @@ class RefundsService(base_service.BaseService):
             params = {self._envelope_key(): params}
         try:
           response = self._perform_request('POST', path, params, headers,
-                                           retries=3,
-                                           retry_delay_seconds=0.5)
+                                           max_network_retries=3,
+                                           retry_delay_in_seconds=0.5)
         except errors.IdempotentCreationConflictError as err:
           return self.get(identity = err.conflicting_resource_id,
                                 params = params,
@@ -78,8 +78,8 @@ class RefundsService(base_service.BaseService):
         path = '/refunds'
         
         response = self._perform_request('GET', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+                                         max_network_retries=3,
+                                         retry_delay_in_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -107,8 +107,8 @@ class RefundsService(base_service.BaseService):
           })
         
         response = self._perform_request('GET', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+                                         max_network_retries=3,
+                                         retry_delay_in_seconds=0.5)
         return self._resource_for(response)
   
 
@@ -132,7 +132,7 @@ class RefundsService(base_service.BaseService):
         if params is not None:
             params = {self._envelope_key(): params}
         response = self._perform_request('PUT', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+                                         max_network_retries=3,
+                                         retry_delay_in_seconds=0.5)
         return self._resource_for(response)
   

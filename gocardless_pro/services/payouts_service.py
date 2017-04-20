@@ -32,8 +32,8 @@ class PayoutsService(base_service.BaseService):
         path = '/payouts'
         
         response = self._perform_request('GET', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+                                         max_network_retries=3,
+                                         retry_delay_in_seconds=0.5)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -63,7 +63,7 @@ class PayoutsService(base_service.BaseService):
           })
         
         response = self._perform_request('GET', path, params, headers,
-                                         retries=3,
-                                         retry_delay_seconds=0.5)
+                                         max_network_retries=3,
+                                         retry_delay_in_seconds=0.5)
         return self._resource_for(response)
   

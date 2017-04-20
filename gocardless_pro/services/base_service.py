@@ -6,7 +6,7 @@
 import re
 import time
 
-from requests import RequestException
+from requests import Timeout, ConnectionError
 from .. import list_response
 from ..api_response import ApiResponse
 from ..errors import MalformedResponseError
@@ -29,15 +29,15 @@ class BaseService(object):
         raise ValueError('Invalid method "{}"'.format(method))
 
     def _perform_request(self, *args, **kwargs):
-        max_attempts = kwargs.pop('retries', 1)
-        retry_delay_seconds = kwargs.pop('retry_delay_seconds', 0.5)
+        max_network_retries = kwargs.pop('max_network_retries', 1)
+        retry_delay_in_seconds = kwargs.pop('retry_delay_in_seconds', 0.5)
         network_execption = None
-        for attempt in range(max_attempts):
+        for attempt in range(max_network_retries):
             try:
                 return self._attempt_request(*args, **kwargs)
-            except (RequestException, MalformedResponseError) as e:
-                network_exception = e
-                time.sleep(retry_delay_seconds)
+            except (Timeout, ConnectionError, MalformedResponseError) as err:
+                network_exception = err
+                time.sleep(retry_delay_in_seconds)
         raise network_exception
 
     def _envelope_key(self):
@@ -56,4 +56,3 @@ class BaseService(object):
 
     def _sub_url_params(self, url, params):
         return re.sub(r':(\w+)', lambda match: params[match.group(1)], url)
-

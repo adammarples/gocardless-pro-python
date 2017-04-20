@@ -101,6 +101,8 @@ def test_handles_idempotent_creation_conflict_error():
 
     assert_equals(assertion.exception.message, fixture['error']['message'])
     assert_equals(assertion.exception.errors, fixture['error']['errors'])
+    assert_equals(assertion.exception.conflicting_resource_id,
+                  fixture['error']['errors'][0]['links']['conflicting_resource_id'])
 
 @responses.activate
 def test_handles_gocardless_error():
@@ -121,4 +123,3 @@ def test_handles_malformed_response():
 
     with assert_raises(errors.MalformedResponseError) as assertion:
         client.post('/test', body={'name': 'Billy Jean'})
-
