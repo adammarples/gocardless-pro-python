@@ -15,6 +15,7 @@ from nose.tools import (
   assert_raises
 )
 
+from gocardless_pro.errors import MalformedResponseError
 from gocardless_pro import resources
 from gocardless_pro import list_response
 
@@ -146,21 +147,19 @@ def test_redirect_flows_complete():
 
 def test_timeout_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
-    with assert_raises(AssertionError):
-      with helpers.stub_timeout_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.redirect_flows.complete(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_timeout(fixture) as rsps:
+      try:
+        response = helpers.client.redirect_flows.complete(*fixture['url_params'])
+      except requests.ConnectTimeout as err:
+        pass
+      assert_equal(1, len(rsps.calls))
 
 def test_502_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
-    with assert_raises(AssertionError):
-      with helpers.stub_502_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.redirect_flows.complete(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_502(fixture) as rsps:
+      try:
+        response = helpers.client.redirect_flows.complete(*fixture['url_params'])
+      except MalformedResponseError as err:
+        pass
+      assert_equal(1, len(rsps.calls))
   

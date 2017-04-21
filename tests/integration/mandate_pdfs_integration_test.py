@@ -15,6 +15,7 @@ from nose.tools import (
   assert_raises
 )
 
+from gocardless_pro.errors import MalformedResponseError
 from gocardless_pro import resources
 from gocardless_pro import list_response
 

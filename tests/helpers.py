@@ -30,6 +30,27 @@ def url_pattern_for(resource_fixture):
     path = re.sub(r':(\w+)', r'\w+', resource_fixture['path_template'])
     return re.compile('http://example.com' + path)
 
+@contextmanager
+def stub_timeout(resource_fixture):
+    url_pattern = url_pattern_for(resource_fixture)
+    json_body = json.dumps(resource_fixture['body'])
+    with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
+      rsps.add(resource_fixture['method'], url_pattern, body=ConnectTimeout())
+      yield rsps
+    # Will raise 'AssertionError: Not all requests have been executed'
+    # if not all of the responses are hit.
+
+@contextmanager
+def stub_502(resource_fixture):
+    url_pattern = url_pattern_for(resource_fixture)
+    json_body = json.dumps(resource_fixture['body'])
+    with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
+      rsps.add(resource_fixture['method'], url_pattern, status=502,
+               content_type='text/html',
+               body='<html><body>Response from Cloudflare</body></html>')
+      yield rsps
+    # Will raise 'AssertionError: Not all requests have been executed'
+    # if not all of the responses are hit.
 
 @contextmanager
 def stub_timeout_then_response(resource_fixture):

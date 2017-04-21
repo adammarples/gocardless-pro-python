@@ -15,6 +15,7 @@ from nose.tools import (
   assert_raises
 )
 
+from gocardless_pro.errors import MalformedResponseError
 from gocardless_pro import resources
 from gocardless_pro import list_response
 
@@ -213,21 +214,19 @@ def test_creditor_bank_accounts_disable():
 
 def test_timeout_creditor_bank_accounts_doesnt_retry():
     fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
-    with assert_raises(AssertionError):
-      with helpers.stub_timeout_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_timeout(fixture) as rsps:
+      try:
+        response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
+      except requests.ConnectTimeout as err:
+        pass
+      assert_equal(1, len(rsps.calls))
 
 def test_502_creditor_bank_accounts_doesnt_retry():
     fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
-    with assert_raises(AssertionError):
-      with helpers.stub_502_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_502(fixture) as rsps:
+      try:
+        response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
+      except MalformedResponseError as err:
+        pass
+      assert_equal(1, len(rsps.calls))
   

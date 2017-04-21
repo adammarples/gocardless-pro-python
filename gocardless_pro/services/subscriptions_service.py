@@ -57,6 +57,7 @@ class SubscriptionsService(base_service.BaseService):
         """
         path = '/subscriptions'
         
+
         response = self._perform_request('GET', path, params, headers,
                                          max_network_retries=3,
                                          retry_delay_in_seconds=0.5)
@@ -86,6 +87,7 @@ class SubscriptionsService(base_service.BaseService):
             'identity': identity,
           })
         
+
         response = self._perform_request('GET', path, params, headers,
                                          max_network_retries=3,
                                          retry_delay_in_seconds=0.5)
@@ -111,6 +113,7 @@ class SubscriptionsService(base_service.BaseService):
         
         if params is not None:
             params = {self._envelope_key(): params}
+
         response = self._perform_request('PUT', path, params, headers,
                                          max_network_retries=3,
                                          retry_delay_in_seconds=0.5)

@@ -15,6 +15,7 @@ from nose.tools import (
   assert_raises
 )
 
+from gocardless_pro.errors import MalformedResponseError
 from gocardless_pro import resources
 from gocardless_pro import list_response
 
@@ -271,23 +272,21 @@ def test_mandates_cancel():
 
 def test_timeout_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['cancel']
-    with assert_raises(AssertionError):
-      with helpers.stub_timeout_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.mandates.cancel(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_timeout(fixture) as rsps:
+      try:
+        response = helpers.client.mandates.cancel(*fixture['url_params'])
+      except requests.ConnectTimeout as err:
+        pass
+      assert_equal(1, len(rsps.calls))
 
 def test_502_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['cancel']
-    with assert_raises(AssertionError):
-      with helpers.stub_502_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.mandates.cancel(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_502(fixture) as rsps:
+      try:
+        response = helpers.client.mandates.cancel(*fixture['url_params'])
+      except MalformedResponseError as err:
+        pass
+      assert_equal(1, len(rsps.calls))
   
 
 @responses.activate
@@ -318,21 +317,19 @@ def test_mandates_reinstate():
 
 def test_timeout_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['reinstate']
-    with assert_raises(AssertionError):
-      with helpers.stub_timeout_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.mandates.reinstate(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_timeout(fixture) as rsps:
+      try:
+        response = helpers.client.mandates.reinstate(*fixture['url_params'])
+      except requests.ConnectTimeout as err:
+        pass
+      assert_equal(1, len(rsps.calls))
 
 def test_502_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['reinstate']
-    with assert_raises(AssertionError):
-      with helpers.stub_502_then_response(fixture) as rsps:
-        try:
-          response = helpers.client.mandates.reinstate(*fixture['url_params'])
-        except Exception:
-          pass
-        assert_equal(1, len(rsps.calls))
+    with helpers.stub_502(fixture) as rsps:
+      try:
+        response = helpers.client.mandates.reinstate(*fixture['url_params'])
+      except MalformedResponseError as err:
+        pass
+      assert_equal(1, len(rsps.calls))
   

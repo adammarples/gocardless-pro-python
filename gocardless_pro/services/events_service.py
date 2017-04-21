@@ -31,6 +31,7 @@ class EventsService(base_service.BaseService):
         """
         path = '/events'
         
+
         response = self._perform_request('GET', path, params, headers,
                                          max_network_retries=3,
                                          retry_delay_in_seconds=0.5)
@@ -60,6 +61,7 @@ class EventsService(base_service.BaseService):
             'identity': identity,
           })
         
+
         response = self._perform_request('GET', path, params, headers,
                                          max_network_retries=3,
                                          retry_delay_in_seconds=0.5)
