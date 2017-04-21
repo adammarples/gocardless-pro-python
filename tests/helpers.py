@@ -8,6 +8,7 @@ import re
 import json
 
 import responses
+from requests import ConnectTimeout
 
 from contextlib import contextmanager
 
@@ -35,7 +36,7 @@ def stub_timeout_then_response(resource_fixture):
     url_pattern = url_pattern_for(resource_fixture)
     json_body = json.dumps(resource_fixture['body'])
     with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
-      rsps.add(resource_fixture['method'], url_pattern, status=408)
+      rsps.add(resource_fixture['method'], url_pattern, body=ConnectTimeout())
       rsps.add(resource_fixture['method'], url_pattern, body=json_body)
       yield rsps
     # Will raise 'AssertionError: Not all requests have been executed'
