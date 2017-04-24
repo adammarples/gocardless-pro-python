@@ -77,7 +77,7 @@ def stub_502_then_response(resource_fixture):
     # if not all of the responses are hit.
 
 
-def idempotency_conflict_body(conflicting_resource_id):
+def idempotent_creation_conflict_body(conflicting_resource_id):
     return {
       'error': {
         'type': 'invalid_state',
@@ -98,7 +98,7 @@ def stub_timeout_then_idempotency_conflict(create_fixture, get_fixture):
     create_url_pattern = url_pattern_for(create_fixture)
     get_url_pattern = url_pattern_for(create_fixture)
     conflicting_resource_id = tuple(create_fixture['body'].values())[0]['id']
-    error_body = json.dumps(idempotency_conflict_body(conflicting_resource_id))
+    error_body = json.dumps(idempotent_creation_conflict_body(conflicting_resource_id))
     get_body = json.dumps(get_fixture['body'])
     with responses.RequestsMock(assert_all_requests_are_fired=True) as rsps:
       rsps.add(create_fixture['method'], create_url_pattern, status=409, body=error_body)

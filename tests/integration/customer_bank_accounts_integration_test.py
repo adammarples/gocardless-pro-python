@@ -49,7 +49,6 @@ def test_timeout_customer_bank_accounts_idempotency_conflict():
     with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
       response = helpers.client.customer_bank_accounts.create(*create_fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-      good_response = rsps.calls[1].response
 
     assert_is_instance(response, resources.CustomerBankAccount)
 
@@ -255,18 +254,14 @@ def test_customer_bank_accounts_disable():
 def test_timeout_customer_bank_accounts_doesnt_retry():
     fixture = helpers.load_fixture('customer_bank_accounts')['disable']
     with helpers.stub_timeout(fixture) as rsps:
-      try:
+      with assert_raises(requests.ConnectTimeout):
         response = helpers.client.customer_bank_accounts.disable(*fixture['url_params'])
-      except requests.ConnectTimeout as err:
-        pass
       assert_equal(1, len(rsps.calls))
 
 def test_502_customer_bank_accounts_doesnt_retry():
     fixture = helpers.load_fixture('customer_bank_accounts')['disable']
     with helpers.stub_502(fixture) as rsps:
-      try:
+      with assert_raises(MalformedResponseError):
         response = helpers.client.customer_bank_accounts.disable(*fixture['url_params'])
-      except MalformedResponseError as err:
-        pass
       assert_equal(1, len(rsps.calls))
   

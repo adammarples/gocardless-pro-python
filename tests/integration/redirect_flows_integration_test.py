@@ -53,7 +53,6 @@ def test_timeout_redirect_flows_idempotency_conflict():
     with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
       response = helpers.client.redirect_flows.create(*create_fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-      good_response = rsps.calls[1].response
 
     assert_is_instance(response, resources.RedirectFlow)
 
@@ -148,18 +147,14 @@ def test_redirect_flows_complete():
 def test_timeout_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
     with helpers.stub_timeout(fixture) as rsps:
-      try:
+      with assert_raises(requests.ConnectTimeout):
         response = helpers.client.redirect_flows.complete(*fixture['url_params'])
-      except requests.ConnectTimeout as err:
-        pass
       assert_equal(1, len(rsps.calls))
 
 def test_502_redirect_flows_doesnt_retry():
     fixture = helpers.load_fixture('redirect_flows')['complete']
     with helpers.stub_502(fixture) as rsps:
-      try:
+      with assert_raises(MalformedResponseError):
         response = helpers.client.redirect_flows.complete(*fixture['url_params'])
-      except MalformedResponseError as err:
-        pass
       assert_equal(1, len(rsps.calls))
   

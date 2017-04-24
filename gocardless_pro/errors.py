@@ -56,10 +56,10 @@ class ApiError(GoCardlessProError):
         if error_type == 'invalid_api_usage':
             return InvalidApiUsageError
         if error_type == 'invalid_state':
-            if errors[0]['reason'] == 'idempotent_creation_conflict':
-                return IdempotentCreationConflictError
-            else:
-                return InvalidStateError
+            for error in errors:
+                if error['reason'] == 'idempotent_creation_conflict':
+                    return IdempotentCreationConflictError
+            return InvalidStateError
         if error_type == 'gocardless':
             return GoCardlessInternalError
         raise GoCardlessProError('Invalid error type "{}"'.format(error_type))
@@ -79,7 +79,8 @@ class IdempotentCreationConflictError(ApiError):
     @property
     def conflicting_resource_id(self):
         for error in self.error['errors']:
-            if 'conflicting_resource_id' in error.get('links', []):
+            if 'conflicting_resource_id' in error.get('links', {}) and \
+                    bool(error['links']['conflicting_resource_id']): # Neither None nor ""
                 return error['links']['conflicting_resource_id']
         else:
             raise ApiError("Idempotent Creation Conflict Error missing conflicting_resource_id")
@@ -102,4 +103,3 @@ class MalformedResponseError(GoCardlessProError):
     def __init__(self, message, response):
         super(MalformedResponseError, self).__init__(message)
         self.response = response
-

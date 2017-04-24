@@ -46,7 +46,6 @@ def test_timeout_refunds_idempotency_conflict():
     with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
       response = helpers.client.refunds.create(*create_fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-      good_response = rsps.calls[1].response
 
     assert_is_instance(response, resources.Refund)
 

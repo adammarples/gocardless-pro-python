@@ -54,7 +54,6 @@ def test_timeout_mandates_idempotency_conflict():
     with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
       response = helpers.client.mandates.create(*create_fixture['url_params'])
       assert_equal(2, len(rsps.calls))
-      good_response = rsps.calls[1].response
 
     assert_is_instance(response, resources.Mandate)
 
@@ -273,19 +272,15 @@ def test_mandates_cancel():
 def test_timeout_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['cancel']
     with helpers.stub_timeout(fixture) as rsps:
-      try:
+      with assert_raises(requests.ConnectTimeout):
         response = helpers.client.mandates.cancel(*fixture['url_params'])
-      except requests.ConnectTimeout as err:
-        pass
       assert_equal(1, len(rsps.calls))
 
 def test_502_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['cancel']
     with helpers.stub_502(fixture) as rsps:
-      try:
+      with assert_raises(MalformedResponseError):
         response = helpers.client.mandates.cancel(*fixture['url_params'])
-      except MalformedResponseError as err:
-        pass
       assert_equal(1, len(rsps.calls))
   
 
@@ -318,18 +313,14 @@ def test_mandates_reinstate():
 def test_timeout_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['reinstate']
     with helpers.stub_timeout(fixture) as rsps:
-      try:
+      with assert_raises(requests.ConnectTimeout):
         response = helpers.client.mandates.reinstate(*fixture['url_params'])
-      except requests.ConnectTimeout as err:
-        pass
       assert_equal(1, len(rsps.calls))
 
 def test_502_mandates_doesnt_retry():
     fixture = helpers.load_fixture('mandates')['reinstate']
     with helpers.stub_502(fixture) as rsps:
-      try:
+      with assert_raises(MalformedResponseError):
         response = helpers.client.mandates.reinstate(*fixture['url_params'])
-      except MalformedResponseError as err:
-        pass
       assert_equal(1, len(rsps.calls))
   
