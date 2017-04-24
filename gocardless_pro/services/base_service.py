@@ -31,14 +31,14 @@ class BaseService(object):
     def _perform_request(self, *args, **kwargs):
         max_network_retries = kwargs.pop('max_network_retries', 1)
         retry_delay_in_seconds = kwargs.pop('retry_delay_in_seconds', 0.5)
-        network_execption = None
-        for attempt in range(max_network_retries):
+        for retries_left in range(max_network_retries-1, -1, -1):
             try:
                 return self._attempt_request(*args, **kwargs)
             except (Timeout, ConnectionError, MalformedResponseError) as err:
-                network_exception = err
-                time.sleep(retry_delay_in_seconds)
-        raise network_exception
+                if retries_left == 0:
+                    raise err
+                else:
+                    time.sleep(retry_delay_in_seconds)
 
     def _envelope_key(self):
         return type(self).RESOURCE_NAME
