@@ -64,7 +64,7 @@ class ApiClient(object):
         """
         headers = headers or {}
         if 'Idempotency-Key' not in headers:
-          headers['Idempotency-Key'] = str(uuid4())
+            headers['Idempotency-Key'] = str(uuid4())
 
         response = requests.post(
             self._url_for(path),
@@ -137,4 +137,3 @@ class ApiClient(object):
             '{0}/{1}'.format(platform.system(), platform.release()),
             'requests/{0}'.format(requests.__version__),
         ])
-
