@@ -14,7 +14,7 @@ from ..errors import MalformedResponseError
 
 class BaseService(object):
     """Base class for API service classes."""
-    def __init__(self, api_client, max_network_retries = 3, retry_delay_in_seconds = 0.5):
+    def __init__(self, api_client, max_network_retries=3, retry_delay_in_seconds=0.5):
         self._api_client = api_client
         self.max_network_retries = max_network_retries
         self.retry_delay_in_seconds = retry_delay_in_seconds

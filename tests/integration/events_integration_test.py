@@ -12,8 +12,8 @@ from nose.tools import (
   assert_is_instance,
   assert_is_none,
   assert_is_not_none,
-  assert_raises,
-  assert_not_equal
+  assert_not_equal,
+  assert_raises
 )
 
 from gocardless_pro.errors import MalformedResponseError

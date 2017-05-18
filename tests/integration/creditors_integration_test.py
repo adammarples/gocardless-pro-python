@@ -12,8 +12,8 @@ from nose.tools import (
   assert_is_instance,
   assert_is_none,
   assert_is_not_none,
-  assert_raises,
-  assert_not_equal
+  assert_not_equal,
+  assert_raises
 )
 
 from gocardless_pro.errors import MalformedResponseError
@@ -44,6 +44,7 @@ def test_creditors_create():
     assert_equal(response.postal_code, body.get('postal_code'))
     assert_equal(response.region, body.get('region'))
     assert_equal(response.scheme_identifiers, body.get('scheme_identifiers'))
+    assert_equal(response.verification_status, body.get('verification_status'))
     assert_equal(response.links.default_eur_payout_account,
                  body.get('links')['default_eur_payout_account'])
     assert_equal(response.links.default_gbp_payout_account,
@@ -59,7 +60,6 @@ def test_creditors_create_unique_idmpotency_key():
     helpers.client.creditors.create(*fixture['url_params'])
     assert_not_equal(responses.calls[0].request.headers.get('Idempotency-Key'),
                      responses.calls[1].request.headers.get('Idempotency-Key'))
-
 
 def test_timeout_creditors_create_idempotency_conflict():
     create_fixture = helpers.load_fixture('creditors')['create']
@@ -131,6 +131,8 @@ def test_creditors_list():
                  [b.get('region') for b in body])
     assert_equal([r.scheme_identifiers for r in response.records],
                  [b.get('scheme_identifiers') for b in body])
+    assert_equal([r.verification_status for r in response.records],
+                 [b.get('verification_status') for b in body])
 
 @responses.activate
 def test_timeout_creditors_list_retries():
@@ -205,6 +207,7 @@ def test_creditors_get():
     assert_equal(response.postal_code, body.get('postal_code'))
     assert_equal(response.region, body.get('region'))
     assert_equal(response.scheme_identifiers, body.get('scheme_identifiers'))
+    assert_equal(response.verification_status, body.get('verification_status'))
     assert_equal(response.links.default_eur_payout_account,
                  body.get('links')['default_eur_payout_account'])
     assert_equal(response.links.default_gbp_payout_account,
@@ -257,6 +260,7 @@ def test_creditors_update():
     assert_equal(response.postal_code, body.get('postal_code'))
     assert_equal(response.region, body.get('region'))
     assert_equal(response.scheme_identifiers, body.get('scheme_identifiers'))
+    assert_equal(response.verification_status, body.get('verification_status'))
     assert_equal(response.links.default_eur_payout_account,
                  body.get('links')['default_eur_payout_account'])
     assert_equal(response.links.default_gbp_payout_account,
