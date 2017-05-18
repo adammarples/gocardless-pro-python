@@ -17,7 +17,7 @@ class EventsService(base_service.BaseService):
     RESOURCE_NAME = 'events'
 
 
-    def list(self,params=None, headers=None):
+    def list(self,params=None, headers={}):
         """List events.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -33,8 +33,7 @@ class EventsService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -44,7 +43,7 @@ class EventsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers=None):
+    def get(self,identity,params=None, headers={}):
         """Get a single event.
 
         Retrieves the details of a single event.
@@ -63,7 +62,6 @@ class EventsService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
   

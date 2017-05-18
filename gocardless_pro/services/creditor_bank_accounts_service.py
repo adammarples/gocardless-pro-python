@@ -17,7 +17,7 @@ class CreditorBankAccountsService(base_service.BaseService):
     RESOURCE_NAME = 'creditor_bank_accounts'
 
 
-    def create(self,params=None, headers=None):
+    def create(self,params=None, headers={}):
         """Create a creditor bank account.
 
         Creates a new creditor bank account object.
@@ -32,18 +32,18 @@ class CreditorBankAccountsService(base_service.BaseService):
         
         if params is not None:
             params = {self._envelope_key(): params}
+
         try:
           response = self._perform_request('POST', path, params, headers,
-                                           max_network_retries=3,
-                                           retry_delay_in_seconds=0.5)
+                                            retry_failures=True)
         except errors.IdempotentCreationConflictError as err:
-          return self.get(identity = err.conflicting_resource_id,
-                                params = params,
-                                headers = headers)
+          return self.get(identity=err.conflicting_resource_id,
+                          params=params,
+                          headers=headers)
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers=None):
+    def list(self,params=None, headers={}):
         """List creditor bank accounts.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -59,8 +59,7 @@ class CreditorBankAccountsService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -70,7 +69,7 @@ class CreditorBankAccountsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers=None):
+    def get(self,identity,params=None, headers={}):
         """Get a single creditor bank account.
 
         Retrieves the details of an existing creditor bank account.
@@ -89,12 +88,11 @@ class CreditorBankAccountsService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
   
 
-    def disable(self,identity,params=None, headers=None):
+    def disable(self,identity,params=None, headers={}):
         """Disable a creditor bank account.
 
         Immediately disables the bank account, no money can be paid out to a
@@ -121,6 +119,7 @@ class CreditorBankAccountsService(base_service.BaseService):
         
         if params is not None:
             params = {'data': params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retry_failures=False)
         return self._resource_for(response)
   

@@ -43,7 +43,7 @@ def test_creditor_bank_accounts_create():
     assert_equal(response.links.creditor,
                  body.get('links')['creditor'])
 
-def test_timeout_creditor_bank_accounts_idempotency_conflict():
+def test_timeout_creditor_bank_accounts_create_idempotency_conflict():
     create_fixture = helpers.load_fixture('creditor_bank_accounts')['create']
     get_fixture = helpers.load_fixture('creditor_bank_accounts')['get']
     with helpers.stub_timeout_then_idempotency_conflict(create_fixture, get_fixture) as rsps:
@@ -52,20 +52,25 @@ def test_timeout_creditor_bank_accounts_idempotency_conflict():
 
     assert_is_instance(response, resources.CreditorBankAccount)
 
-def test_timeout_creditor_bank_accounts_retries():
+@responses.activate
+def test_timeout_creditor_bank_accounts_create_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['create']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, resources.CreditorBankAccount)
 
-def test_502_creditor_bank_accounts_retries():
+def test_502_creditor_bank_accounts_create_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['create']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.create(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, resources.CreditorBankAccount)
@@ -103,11 +108,14 @@ def test_creditor_bank_accounts_list():
     assert_equal([r.metadata for r in response.records],
                  [b.get('metadata') for b in body])
 
-def test_timeout_creditor_bank_accounts_retries():
+@responses.activate
+def test_timeout_creditor_bank_accounts_list_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['list']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.list(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, list_response.ListResponse)
@@ -116,11 +124,13 @@ def test_timeout_creditor_bank_accounts_retries():
     assert_equal(response.before, fixture['body']['meta']['cursors']['before'])
     assert_equal(response.after, fixture['body']['meta']['cursors']['after'])
 
-def test_502_creditor_bank_accounts_retries():
+def test_502_creditor_bank_accounts_list_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['list']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.list(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, list_response.ListResponse)
@@ -171,20 +181,25 @@ def test_creditor_bank_accounts_get():
     assert_equal(response.links.creditor,
                  body.get('links')['creditor'])
 
-def test_timeout_creditor_bank_accounts_retries():
+@responses.activate
+def test_timeout_creditor_bank_accounts_get_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['get']
     with helpers.stub_timeout_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, resources.CreditorBankAccount)
 
-def test_502_creditor_bank_accounts_retries():
+def test_502_creditor_bank_accounts_get_retries():
     fixture = helpers.load_fixture('creditor_bank_accounts')['get']
     with helpers.stub_502_then_response(fixture) as rsps:
       response = helpers.client.creditor_bank_accounts.get(*fixture['url_params'])
       assert_equal(2, len(rsps.calls))
+      assert_equal(rsps.calls[0].request.headers.get('Idempotency-Key'),
+                   rsps.calls[1].request.headers.get('Idempotency-Key'))
     body = fixture['body']['creditor_bank_accounts']
 
     assert_is_instance(response, resources.CreditorBankAccount)
@@ -211,14 +226,14 @@ def test_creditor_bank_accounts_disable():
     assert_equal(response.links.creditor,
                  body.get('links')['creditor'])
 
-def test_timeout_creditor_bank_accounts_doesnt_retry():
+def test_timeout_creditor_bank_accounts_disable_doesnt_retry():
     fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
     with helpers.stub_timeout(fixture) as rsps:
       with assert_raises(requests.ConnectTimeout):
         response = helpers.client.creditor_bank_accounts.disable(*fixture['url_params'])
       assert_equal(1, len(rsps.calls))
 
-def test_502_creditor_bank_accounts_doesnt_retry():
+def test_502_creditor_bank_accounts_disable_doesnt_retry():
     fixture = helpers.load_fixture('creditor_bank_accounts')['disable']
     with helpers.stub_502(fixture) as rsps:
       with assert_raises(MalformedResponseError):

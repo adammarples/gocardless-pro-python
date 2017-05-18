@@ -17,7 +17,7 @@ class MandatesService(base_service.BaseService):
     RESOURCE_NAME = 'mandates'
 
 
-    def create(self,params=None, headers=None):
+    def create(self,params=None, headers={}):
         """Create a mandate.
 
         Creates a new mandate object.
@@ -32,18 +32,18 @@ class MandatesService(base_service.BaseService):
         
         if params is not None:
             params = {self._envelope_key(): params}
+
         try:
           response = self._perform_request('POST', path, params, headers,
-                                           max_network_retries=3,
-                                           retry_delay_in_seconds=0.5)
+                                            retry_failures=True)
         except errors.IdempotentCreationConflictError as err:
-          return self.get(identity = err.conflicting_resource_id,
-                                params = params,
-                                headers = headers)
+          return self.get(identity=err.conflicting_resource_id,
+                          params=params,
+                          headers=headers)
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers=None):
+    def list(self,params=None, headers={}):
         """List mandates.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -59,8 +59,7 @@ class MandatesService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
 
     def all(self, params=None):
@@ -70,7 +69,7 @@ class MandatesService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers=None):
+    def get(self,identity,params=None, headers={}):
         """Get a single mandate.
 
         Retrieves the details of an existing mandate.
@@ -89,12 +88,11 @@ class MandatesService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers=None):
+    def update(self,identity,params=None, headers={}):
         """Update a mandate.
 
         Updates a mandate object. This accepts only the metadata parameter.
@@ -115,12 +113,11 @@ class MandatesService(base_service.BaseService):
             params = {self._envelope_key(): params}
 
         response = self._perform_request('PUT', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
   
 
-    def cancel(self,identity,params=None, headers=None):
+    def cancel(self,identity,params=None, headers={}):
         """Cancel a mandate.
 
         Immediately cancels a mandate and all associated cancellable payments.
@@ -144,11 +141,12 @@ class MandatesService(base_service.BaseService):
         
         if params is not None:
             params = {'data': params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retry_failures=False)
         return self._resource_for(response)
   
 
-    def reinstate(self,identity,params=None, headers=None):
+    def reinstate(self,identity,params=None, headers={}):
         """Reinstate a mandate.
 
         <a name="mandate_not_inactive"></a>Reinstates a cancelled or expired
@@ -180,6 +178,7 @@ class MandatesService(base_service.BaseService):
         
         if params is not None:
             params = {'data': params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retry_failures=False)
         return self._resource_for(response)
   

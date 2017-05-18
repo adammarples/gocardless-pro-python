@@ -17,7 +17,7 @@ class RedirectFlowsService(base_service.BaseService):
     RESOURCE_NAME = 'redirect_flows'
 
 
-    def create(self,params=None, headers=None):
+    def create(self,params=None, headers={}):
         """Create a redirect flow.
 
         Creates a redirect flow object which can then be used to redirect your
@@ -33,18 +33,18 @@ class RedirectFlowsService(base_service.BaseService):
         
         if params is not None:
             params = {self._envelope_key(): params}
+
         try:
           response = self._perform_request('POST', path, params, headers,
-                                           max_network_retries=3,
-                                           retry_delay_in_seconds=0.5)
+                                            retry_failures=True)
         except errors.IdempotentCreationConflictError as err:
-          return self.get(identity = err.conflicting_resource_id,
-                                params = params,
-                                headers = headers)
+          return self.get(identity=err.conflicting_resource_id,
+                          params=params,
+                          headers=headers)
         return self._resource_for(response)
   
 
-    def get(self,identity,params=None, headers=None):
+    def get(self,identity,params=None, headers={}):
         """Get a single redirect flow.
 
         Returns all details about a single redirect flow
@@ -63,12 +63,11 @@ class RedirectFlowsService(base_service.BaseService):
         
 
         response = self._perform_request('GET', path, params, headers,
-                                         max_network_retries=3,
-                                         retry_delay_in_seconds=0.5)
+                                         retry_failures=True)
         return self._resource_for(response)
   
 
-    def complete(self,identity,params=None, headers=None):
+    def complete(self,identity,params=None, headers={}):
         """Complete a redirect flow.
 
         This creates a [customer](#core-endpoints-customers), [customer bank
@@ -98,6 +97,7 @@ class RedirectFlowsService(base_service.BaseService):
         
         if params is not None:
             params = {'data': params}
-        response = self._perform_request('POST', path, params, headers)
+        response = self._perform_request('POST', path, params, headers,
+                                         retry_failures=False)
         return self._resource_for(response)
   
