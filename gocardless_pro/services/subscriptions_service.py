@@ -17,7 +17,7 @@ class SubscriptionsService(base_service.BaseService):
     RESOURCE_NAME = 'subscriptions'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a subscription.
 
         Creates a new subscription object
@@ -43,7 +43,7 @@ class SubscriptionsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List subscriptions.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -69,7 +69,7 @@ class SubscriptionsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single subscription.
 
         Retrieves the details of a single subscription.
@@ -92,7 +92,7 @@ class SubscriptionsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a subscription.
 
         Updates a subscription object.
@@ -117,7 +117,7 @@ class SubscriptionsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def cancel(self,identity,params=None, headers={}):
+    def cancel(self,identity,params=None, headers=None):
         """Cancel a subscription.
 
         Immediately cancels a subscription; no more payments will be created

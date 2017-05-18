@@ -17,7 +17,7 @@ class RedirectFlowsService(base_service.BaseService):
     RESOURCE_NAME = 'redirect_flows'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a redirect flow.
 
         Creates a redirect flow object which can then be used to redirect your
@@ -44,7 +44,7 @@ class RedirectFlowsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single redirect flow.
 
         Returns all details about a single redirect flow
@@ -67,7 +67,7 @@ class RedirectFlowsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def complete(self,identity,params=None, headers={}):
+    def complete(self,identity,params=None, headers=None):
         """Complete a redirect flow.
 
         This creates a [customer](#core-endpoints-customers), [customer bank

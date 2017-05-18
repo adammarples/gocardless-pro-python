@@ -17,7 +17,7 @@ class PaymentsService(base_service.BaseService):
     RESOURCE_NAME = 'payments'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a payment.
 
         <a name="mandate_is_inactive"></a>Creates a new payment object.
@@ -50,7 +50,7 @@ class PaymentsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List payments.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -76,7 +76,7 @@ class PaymentsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single payment.
 
         Retrieves the details of a single existing payment.
@@ -99,7 +99,7 @@ class PaymentsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a payment.
 
         Updates a payment object. This accepts only the metadata parameter.
@@ -124,7 +124,7 @@ class PaymentsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def cancel(self,identity,params=None, headers={}):
+    def cancel(self,identity,params=None, headers=None):
         """Cancel a payment.
 
         Cancels the payment if it has not already been submitted to the banks.
@@ -154,7 +154,7 @@ class PaymentsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def retry(self,identity,params=None, headers={}):
+    def retry(self,identity,params=None, headers=None):
         """Retry a payment.
 
         <a name="retry_failed"></a>Retries a failed payment if the underlying

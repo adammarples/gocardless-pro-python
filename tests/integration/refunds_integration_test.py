@@ -12,7 +12,8 @@ from nose.tools import (
   assert_is_instance,
   assert_is_none,
   assert_is_not_none,
-  assert_raises
+  assert_raises,
+  assert_not_equal
 )
 
 from gocardless_pro.errors import MalformedResponseError
@@ -39,6 +40,16 @@ def test_refunds_create():
     assert_equal(response.reference, body.get('reference'))
     assert_equal(response.links.payment,
                  body.get('links')['payment'])
+
+@responses.activate
+def test_refunds_create_unique_idmpotency_key():
+    fixture = helpers.load_fixture('refunds')['create']
+    helpers.stub_response(fixture)
+    helpers.client.refunds.create(*fixture['url_params'])
+    helpers.client.refunds.create(*fixture['url_params'])
+    assert_not_equal(responses.calls[0].request.headers.get('Idempotency-Key'),
+                     responses.calls[1].request.headers.get('Idempotency-Key'))
+
 
 def test_timeout_refunds_create_idempotency_conflict():
     create_fixture = helpers.load_fixture('refunds')['create']

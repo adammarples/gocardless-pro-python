@@ -17,7 +17,7 @@ class CreditorBankAccountsService(base_service.BaseService):
     RESOURCE_NAME = 'creditor_bank_accounts'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a creditor bank account.
 
         Creates a new creditor bank account object.
@@ -43,7 +43,7 @@ class CreditorBankAccountsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List creditor bank accounts.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -69,7 +69,7 @@ class CreditorBankAccountsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single creditor bank account.
 
         Retrieves the details of an existing creditor bank account.
@@ -92,7 +92,7 @@ class CreditorBankAccountsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def disable(self,identity,params=None, headers={}):
+    def disable(self,identity,params=None, headers=None):
         """Disable a creditor bank account.
 
         Immediately disables the bank account, no money can be paid out to a

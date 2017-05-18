@@ -17,7 +17,7 @@ class PayoutsService(base_service.BaseService):
     RESOURCE_NAME = 'payouts'
 
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List payouts.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -43,7 +43,7 @@ class PayoutsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single payout.
 
         Retrieves the details of a single payout. For an example of how to

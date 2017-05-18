@@ -17,7 +17,7 @@ class EventsService(base_service.BaseService):
     RESOURCE_NAME = 'events'
 
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List events.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -43,7 +43,7 @@ class EventsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single event.
 
         Retrieves the details of a single event.

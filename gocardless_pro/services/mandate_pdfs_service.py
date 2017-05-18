@@ -17,7 +17,7 @@ class MandatePdfsService(base_service.BaseService):
     RESOURCE_NAME = 'mandate_pdfs'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a mandate PDF.
 
         Generates a PDF mandate and returns its temporary URL.

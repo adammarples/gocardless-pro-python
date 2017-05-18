@@ -12,7 +12,8 @@ from nose.tools import (
   assert_is_instance,
   assert_is_none,
   assert_is_not_none,
-  assert_raises
+  assert_raises,
+  assert_not_equal
 )
 
 from gocardless_pro.errors import MalformedResponseError
@@ -46,6 +47,16 @@ def test_redirect_flows_create():
                  body.get('links')['customer_bank_account'])
     assert_equal(response.links.mandate,
                  body.get('links')['mandate'])
+
+@responses.activate
+def test_redirect_flows_create_unique_idmpotency_key():
+    fixture = helpers.load_fixture('redirect_flows')['create']
+    helpers.stub_response(fixture)
+    helpers.client.redirect_flows.create(*fixture['url_params'])
+    helpers.client.redirect_flows.create(*fixture['url_params'])
+    assert_not_equal(responses.calls[0].request.headers.get('Idempotency-Key'),
+                     responses.calls[1].request.headers.get('Idempotency-Key'))
+
 
 def test_timeout_redirect_flows_create_idempotency_conflict():
     create_fixture = helpers.load_fixture('redirect_flows')['create']

@@ -17,7 +17,7 @@ class RefundsService(base_service.BaseService):
     RESOURCE_NAME = 'refunds'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a refund.
 
         Creates a new refund object.
@@ -63,7 +63,7 @@ class RefundsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List refunds.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -89,7 +89,7 @@ class RefundsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single refund.
 
         Retrieves all details for a single refund
@@ -112,7 +112,7 @@ class RefundsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a refund.
 
         Updates a refund object.

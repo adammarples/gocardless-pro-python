@@ -17,7 +17,7 @@ class BankDetailsLookupsService(base_service.BaseService):
     RESOURCE_NAME = 'bank_details_lookups'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Perform a bank details lookup.
 
         Performs a bank details lookup.

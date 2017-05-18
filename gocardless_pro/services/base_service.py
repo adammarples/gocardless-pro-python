@@ -14,12 +14,12 @@ from ..errors import MalformedResponseError
 
 class BaseService(object):
     """Base class for API service classes."""
-    def __init__(self, api_client, max_network_retries=3, retry_delay_in_seconds=0.5):
+    def __init__(self, api_client, max_network_retries = 3, retry_delay_in_seconds = 0.5):
         self._api_client = api_client
         self.max_network_retries = max_network_retries
         self.retry_delay_in_seconds = retry_delay_in_seconds
 
-    def _perform_request(self, method, path, params, headers={}, retry_failures=False):
+    def _perform_request(self, method, path, params, headers=None, retry_failures=False):
         if method == 'POST':
             headers = self._inject_idempotency_key(headers)
 
@@ -49,6 +49,7 @@ class BaseService(object):
 
 
     def _inject_idempotency_key(self, headers):
+        headers = headers or {}
         if 'Idempotency-Key' not in headers:
             headers['Idempotency-Key'] = str(uuid4())
 

@@ -17,7 +17,7 @@ class MandatesService(base_service.BaseService):
     RESOURCE_NAME = 'mandates'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a mandate.
 
         Creates a new mandate object.
@@ -43,7 +43,7 @@ class MandatesService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List mandates.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -69,7 +69,7 @@ class MandatesService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single mandate.
 
         Retrieves the details of an existing mandate.
@@ -92,7 +92,7 @@ class MandatesService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a mandate.
 
         Updates a mandate object. This accepts only the metadata parameter.
@@ -117,7 +117,7 @@ class MandatesService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def cancel(self,identity,params=None, headers={}):
+    def cancel(self,identity,params=None, headers=None):
         """Cancel a mandate.
 
         Immediately cancels a mandate and all associated cancellable payments.
@@ -146,7 +146,7 @@ class MandatesService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def reinstate(self,identity,params=None, headers={}):
+    def reinstate(self,identity,params=None, headers=None):
         """Reinstate a mandate.
 
         <a name="mandate_not_inactive"></a>Reinstates a cancelled or expired

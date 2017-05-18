@@ -17,7 +17,7 @@ class CustomerBankAccountsService(base_service.BaseService):
     RESOURCE_NAME = 'customer_bank_accounts'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a customer bank account.
 
         Creates a new customer bank account object.
@@ -59,7 +59,7 @@ class CustomerBankAccountsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List customer bank accounts.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -85,7 +85,7 @@ class CustomerBankAccountsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single customer bank account.
 
         Retrieves the details of an existing bank account.
@@ -108,7 +108,7 @@ class CustomerBankAccountsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a customer bank account.
 
         Updates a customer bank account object. Only the metadata parameter is
@@ -134,7 +134,7 @@ class CustomerBankAccountsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def disable(self,identity,params=None, headers={}):
+    def disable(self,identity,params=None, headers=None):
         """Disable a customer bank account.
 
         Immediately cancels all associated mandates and cancellable payments.

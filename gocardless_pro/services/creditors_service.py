@@ -17,7 +17,7 @@ class CreditorsService(base_service.BaseService):
     RESOURCE_NAME = 'creditors'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a creditor.
 
         Creates a new creditor.
@@ -43,7 +43,7 @@ class CreditorsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List creditors.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -69,7 +69,7 @@ class CreditorsService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single creditor.
 
         Retrieves the details of an existing creditor.
@@ -92,7 +92,7 @@ class CreditorsService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a creditor.
 
         Updates a creditor object. Supports all of the fields supported when

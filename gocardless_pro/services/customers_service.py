@@ -17,7 +17,7 @@ class CustomersService(base_service.BaseService):
     RESOURCE_NAME = 'customers'
 
 
-    def create(self,params=None, headers={}):
+    def create(self,params=None, headers=None):
         """Create a customer.
 
         Creates a new customer object.
@@ -43,7 +43,7 @@ class CustomersService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def list(self,params=None, headers={}):
+    def list(self,params=None, headers=None):
         """List customers.
 
         Returns a [cursor-paginated](#api-usage-cursor-pagination) list of your
@@ -69,7 +69,7 @@ class CustomersService(base_service.BaseService):
     
   
 
-    def get(self,identity,params=None, headers={}):
+    def get(self,identity,params=None, headers=None):
         """Get a single customer.
 
         Retrieves the details of an existing customer.
@@ -92,7 +92,7 @@ class CustomersService(base_service.BaseService):
         return self._resource_for(response)
   
 
-    def update(self,identity,params=None, headers={}):
+    def update(self,identity,params=None, headers=None):
         """Update a customer.
 
         Updates a customer object. Supports all of the fields supported when
