@@ -49,7 +49,7 @@ def test_redirect_flows_create():
                  body.get('links')['mandate'])
 
 @responses.activate
-def test_redirect_flows_create_unique_idmpotency_key():
+def test_redirect_flows_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('redirect_flows')['create']
     helpers.stub_response(fixture)
     helpers.client.redirect_flows.create(*fixture['url_params'])

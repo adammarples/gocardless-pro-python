@@ -50,7 +50,7 @@ def test_customers_create():
     assert_equal(response.swedish_identity_number, body.get('swedish_identity_number'))
 
 @responses.activate
-def test_customers_create_unique_idmpotency_key():
+def test_customers_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('customers')['create']
     helpers.stub_response(fixture)
     helpers.client.customers.create(*fixture['url_params'])

@@ -45,7 +45,7 @@ def test_creditor_bank_accounts_create():
                  body.get('links')['creditor'])
 
 @responses.activate
-def test_creditor_bank_accounts_create_unique_idmpotency_key():
+def test_creditor_bank_accounts_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('creditor_bank_accounts')['create']
     helpers.stub_response(fixture)
     helpers.client.creditor_bank_accounts.create(*fixture['url_params'])

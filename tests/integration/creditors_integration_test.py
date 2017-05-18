@@ -53,7 +53,7 @@ def test_creditors_create():
                  body.get('links')['default_sek_payout_account'])
 
 @responses.activate
-def test_creditors_create_unique_idmpotency_key():
+def test_creditors_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('creditors')['create']
     helpers.stub_response(fixture)
     helpers.client.creditors.create(*fixture['url_params'])

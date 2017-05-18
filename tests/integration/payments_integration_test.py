@@ -52,7 +52,7 @@ def test_payments_create():
                  body.get('links')['subscription'])
 
 @responses.activate
-def test_payments_create_unique_idmpotency_key():
+def test_payments_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('payments')['create']
     helpers.stub_response(fixture)
     helpers.client.payments.create(*fixture['url_params'])

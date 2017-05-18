@@ -51,7 +51,7 @@ def test_subscriptions_create():
                  body.get('links')['mandate'])
 
 @responses.activate
-def test_subscriptions_create_unique_idmpotency_key():
+def test_subscriptions_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('subscriptions')['create']
     helpers.stub_response(fixture)
     helpers.client.subscriptions.create(*fixture['url_params'])

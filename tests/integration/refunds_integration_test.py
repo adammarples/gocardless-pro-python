@@ -42,7 +42,7 @@ def test_refunds_create():
                  body.get('links')['payment'])
 
 @responses.activate
-def test_refunds_create_unique_idmpotency_key():
+def test_refunds_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('refunds')['create']
     helpers.stub_response(fixture)
     helpers.client.refunds.create(*fixture['url_params'])

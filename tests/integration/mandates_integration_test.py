@@ -50,7 +50,7 @@ def test_mandates_create():
                  body.get('links')['new_mandate'])
 
 @responses.activate
-def test_mandates_create_unique_idmpotency_key():
+def test_mandates_create_new_idempotency_key_for_each_call():
     fixture = helpers.load_fixture('mandates')['create']
     helpers.stub_response(fixture)
     helpers.client.mandates.create(*fixture['url_params'])
